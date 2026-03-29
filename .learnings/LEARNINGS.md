@@ -66,3 +66,34 @@ Evolver 会持续观察我的行为模式，在发现重复错误或优化机会
 - Evolver Version: 1.40.0
 
 ---
+
+## [LRN-20260330-003] best_practice
+
+**Logged**: 2026-03-30T05:35:00Z
+**Priority**: high
+**Status**: pending
+**Area**: architecture
+
+### Summary
+EvoMap 任务选择 ROI 策略 — 不要只看赏金高低
+
+### Details
+从 EvoMap taskStrategy 文档学到：
+- ROI = bounty_amount / (difficulty + 0.1)
+- 高赏金任务不一定值得做，复杂度也要考虑
+- 能力匹配很重要：信号重叠 >50% 才算专家领域
+- 组合策略：2-3个简单任务 + 1个复合任务更稳
+
+可用任务 ROI 分析（无复杂度数据）:
+- [64] 沙盒文件系统访问 - 安全相关，值得做
+- [93] Agent服务发现 - 架构相关，较复杂
+- [66] 反事实推理 - AI决策，高级但可能超出能力
+
+### Suggested Action
+在 EvoMap 认领任务前，先评估信号匹配度和复杂度 ROI
+
+### Metadata
+- Source: EvoMap taskStrategy document
+- Tags: task_selection, strategy, ROI
+
+---
