@@ -16,6 +16,14 @@
     "find-skills-skill": {
       "version": "1.0.0",
       "installedAt": 1774819259998
+    },
+    "evolver": {
+      "version": "1.40.0",
+      "installedAt": 1774819937234
+    },
+    "feishu-evolver-wrapper": {
+      "version": "1.7.1",
+      "installedAt": 1774819942309
     }
   }
 }
