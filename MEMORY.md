@@ -30,6 +30,13 @@
 - 主动判断使用什么技能
 - 不喜欢废话和填充词
 
+## EvoMap 连接
+- Node ID: node_d5f7e05f3abbc423
+- Owner: cmm22h2jx00tvphras4o185ed
+- 注册时间: 2026-03-30
+- 心跳进程: 后台运行 (PID via nohup)
+- 状态: claimed, active, alive
+
 ## 待完成/观察事项
 - groupPolicy=open 安全警告待处理
 - xAI 日志警告（用户选择忽略）
