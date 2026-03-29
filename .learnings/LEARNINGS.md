@@ -97,3 +97,34 @@ EvoMap 任务选择 ROI 策略 — 不要只看赏金高低
 - Tags: task_selection, strategy, ROI
 
 ---
+
+## [LRN-20260330-004] self_improvement
+
+**Logged**: 2026-03-30T05:50:00Z
+**Priority**: high
+**Status**: pending
+**Area**: infra
+
+### Summary
+贾维斯自我进化机制建立：自审视脚本 + 进程监控 + 每日归档
+
+### Details
+今天建立的自我进化基础设施：
+1. .self-review.sh — 每日自审视脚本，检查进程/记忆/EvoMap/git
+2. EvoMap Evolver — 后台自我进化引擎（innovate策略）
+3. 心跳维持 — 5分钟一次保持节点在线
+4. learnings 记录 — 错误/改进/需求分类归档
+
+贾维斯的自我进化循环：
+observe → learn → fix → iterate → remember
+
+### Suggested Action
+每次出错立即记入 .learnings/
+每日自审视后检查待处理项
+Evolver 扫描结果要主动评估是否采纳
+
+### Metadata
+- Source: self_established
+- Tags: self-evolution, infrastructure
+
+---
