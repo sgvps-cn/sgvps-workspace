@@ -24,6 +24,22 @@
     "feishu-evolver-wrapper": {
       "version": "1.7.1",
       "installedAt": 1774819942309
+    },
+    "memory-self-heal": {
+      "version": "1.1.0",
+      "installedAt": 1774821288441
+    },
+    "recursive-self-improvement": {
+      "version": "1.0.0",
+      "installedAt": 1774821320207
+    },
+    "self-health-monitor": {
+      "version": "1.0.0",
+      "installedAt": 1774821323027
+    },
+    "inner-life-evolve": {
+      "version": "1.0.4",
+      "installedAt": 1774821325570
     }
   }
 }
