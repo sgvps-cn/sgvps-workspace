@@ -52,6 +52,18 @@
     "vps-maintenance": {
       "version": "1.0.0",
       "installedAt": 1774823658944
+    },
+    "monitoring": {
+      "version": "1.0.0",
+      "installedAt": 1774824497061
+    },
+    "docker-manager": {
+      "version": "1.0.2",
+      "installedAt": 1774824499719
+    },
+    "docker-essentials": {
+      "version": "1.0.0",
+      "installedAt": 1774824502204
     }
   }
 }
