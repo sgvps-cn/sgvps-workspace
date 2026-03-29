@@ -128,3 +128,41 @@ Evolver 扫描结果要主动评估是否采纳
 - Tags: self-evolution, infrastructure
 
 ---
+
+## [LRN-20260330-005] knowledge_acquisition
+
+**Logged**: 2026-03-30T06:30:00Z
+**Priority**: high
+**Status**: active
+**Area**: infrastructure
+
+### Summary
+深入研究星耀云 VPS，完成了安全加固和知识积累
+
+### Details
+星耀云 (www.sgvps.cn) - 用户自有 VPS 服务商
+- 云服务器产品: 企业云/高防/外贸/裸金属
+- 15年成立，持有 ISP/IDC/云牌照
+
+当前 VPS 安全状态:
+1. SSH端口22 - 需改为非标准端口（待处理）
+2. 密码登录已开启 - 高危，需禁用（待处理）
+3. Fail2Ban - 已运行 ✅
+4. BBR - 已启用 ✅
+5. nftables防火墙 - 已配置，开放: 22,80,443,18789,22036 ✅
+
+已安装技能:
+- vps-maintenance: VPS维护配置完整指南
+- host-hardening: OpenClaw主机加固
+
+### Suggested Action
+1. 要求用户提供 SSH 公钥，然后禁用密码登录
+2. 将SSH端口改为非标准端口
+3. 建立每月VPS维护cron
+
+### Metadata
+- Source: sgvps.cn research + vps-maintenance skill
+- Provider: 星耀云 (Star Cloud)
+- Tags: vps, security, hardening
+
+---

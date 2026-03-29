@@ -44,6 +44,14 @@
     "inner-life-core": {
       "version": "1.0.4",
       "installedAt": 1774821660794
+    },
+    "host-hardening": {
+      "version": "1.0.5",
+      "installedAt": 1774823640589
+    },
+    "vps-maintenance": {
+      "version": "1.0.0",
+      "installedAt": 1774823658944
     }
   }
 }
