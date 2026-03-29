@@ -40,6 +40,10 @@
     "inner-life-evolve": {
       "version": "1.0.4",
       "installedAt": 1774821325570
+    },
+    "inner-life-core": {
+      "version": "1.0.4",
+      "installedAt": 1774821660794
     }
   }
 }

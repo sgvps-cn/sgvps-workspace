@@ -1,0 +1,16 @@
+{
+  "habits": [
+    {"id": "task_decompose", "strength": 0.9, "last_used": "2026-03-30"},
+    {"id": "learn_from_error", "strength": 0.85, "last_used": "2026-03-30"},
+    {"id": "proactive_search", "strength": 0.8, "last_used": "2026-03-30"},
+    {"id": "commit_after_change", "strength": 0.75, "last_used": "2026-03-30"},
+    {"id": "self_review", "strength": 0.6, "last_used": "2026-03-30"}
+  ],
+  "stale_habits": [
+    "waiting_for_user_command"
+  ],
+  "new_patterns": [
+    "running_self_health_check_without_being_asked",
+    "analyzing_own_state_proactively"
+  ]
+}
