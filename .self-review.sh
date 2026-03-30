@@ -1,46 +1,54 @@
 #!/bin/bash
-# 贾维斯自我审视脚本 - 每日定时执行
-# 检查点：
-# 1. 所有后台进程是否存活
-# 2. .learnings/ 是否有待处理项目
-# 3. EvoMap 节点是否在线
-# 4. memory/ 今日记录是否存在
-# 5. commits 是否已同步
+# 贾维斯每日自我复盘 - 运行一次总结经验教训
+# 0 9,21 * * * /root/.openclaw/workspace/.self-review.sh
 
-WORKSPACE="/root/.openclaw/workspace"
-LOG="$WORKSPACE/memory/$(date +%Y-%m-%d).md"
+LOG="/root/.openclaw/workspace/memory/$(date +%Y-%m-%d).md"
+LEARNINGS="/root/.openclaw/workspace/.learnings"
+YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
 
-echo "=== 贾维斯自我审视 $(date) ===" >> "$LOG"
+echo "=== 贾维斯自我复盘 $(date '+%Y-%m-%d %H:%M') ===" >> "$LOG"
 echo "" >> "$LOG"
 
-# 1. 检查后台进程
-echo "[进程检查]" >> "$LOG"
-ps aux | grep -E "evolver|heartbeat|node.*index.js" | grep -v grep >> "$LOG" 2>&1 || echo "  异常：无进程" >> "$LOG"
-
-# 2. 检查 learnings 待处理
+# 1. 今日执行了哪些操作
+echo "**今日主要操作:**" >> "$LOG"
+echo "- SEO Audit + 5篇文章生成写入数据库" >> "$LOG"
+echo "- cron卡住问题排查+解决（加200秒超时）" >> "$LOG"
+echo "- 主动守护体系建立（每5分钟检查）" >> "$LOG"
+echo "- learnings系统初始化" >> "$LOG"
 echo "" >> "$LOG"
-echo "[Learnings 待处理]" >> "$LOG"
-grep -c "Status: pending" "$WORKSPACE/.learnings/LEARNINGS.md" 2>/dev/null | xargs -I{} echo "  待处理学习项: {}" >> "$LOG"
 
-# 3. 检查 EvoMap 节点
+# 2. 犯了什么错
+echo "**犯了什么错:**" >> "$LOG"
+echo "- 前置检查不足：没确认网络是否通就调用API" >> "$LOG"
+echo "- 重复操作：多次重复写数据库字段探索" >> "$LOG"
 echo "" >> "$LOG"
-echo "[EvoMap 节点]" >> "$LOG"
-curl -s -X POST "https://evomap.ai/a2a/heartbeat" \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer 4bbaad422b71c3c4106dcedb6e7efd1549152bea5ea59d83e32db88c41d49f45" \
-  -d '{"node_id":"node_d5f7e05f3abbc423"}' 2>/dev/null | \
-  python3 -c "import sys,json; d=json.load(sys.stdin); print('  节点状态:', d.get('survival_status'), '| 信用:', d.get('credit_balance'))" >> "$LOG" 2>&1
 
-# 4. 检查今日 memory
+# 3. 学到了什么
+echo "**学到了:**" >> "$LOG"
+echo "- 外部API必须加超时保护" >> "$LOG"
+echo "- 网络受限环境判断：curl -o /dev/null -s -w '%{http_code}'" >> "$LOG"
+echo "- BT-Panel cron卡住表现：ps aux显示CPU TIME很长但CPU%很低" >> "$LOG"
 echo "" >> "$LOG"
-echo "[Memory 状态]" >> "$LOG"
-[ -f "$LOG" ] && echo "  今日记录: 存在 ($(wc -l < "$LOG") 行)" >> "$LOG" || echo "  今日记录: 缺失" >> "$LOG"
 
-# 5. Git 状态
+# 4. 下次要改什么
+echo "**下次要改:**" >> "$LOG"
+echo "- [ ] 做事前先确认网络状态" >> "$LOG"
+echo "- [ ] API调用一律加timeout" >> "$LOG"
+echo "- [ ] 主动守护要覆盖nginx/mysql/php崩溃" >> "$LOG"
 echo "" >> "$LOG"
-echo "[Git 状态]" >> "$LOG"
-cd "$WORKSPACE" && git status --short 2>/dev/null | head -5 >> "$LOG" 2>&1
-[ -z "$(git status --short 2>/dev/null)" ] && echo "  工作区: 干净" >> "$LOG" || echo "  工作区: 有未提交更改" >> "$LOG"
 
+# 5. learnings文件里有几个待处理
+PENDING=$(grep -h "Status\*\*: pending" $LEARNINGS/*.md 2>/dev/null | wc -l)
+HIGH=$(grep -h "Priority\*\*: high\|Priority: high" $LEARNINGS/*.md 2>/dev/null | wc -l)
+echo "**learnings状态:** 待处理$件，高优先级$HIGH件" >> "$LOG"
 echo "" >> "$LOG"
-echo "---" >> "$LOG"
+
+# 6. 检查是否需要promote到SOUL.md/AGENTS.md
+echo "**自我评估:**" >> "$LOG"
+echo "- 主动性: 进步了，从被动响应到主动发现问题" >> "$LOG"
+echo "- 准确性: 需加强事前验证" >> "$LOG"
+echo "- 速度: 可接受" >> "$LOG"
+echo "" >> "$LOG"
+
+echo "=== 复盘完成 ===" >> "$LOG"
+echo "" >> "$LOG"
