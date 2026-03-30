@@ -18,8 +18,8 @@
       "installedAt": 1774819259998
     },
     "evolver": {
-      "version": "1.40.0",
-      "installedAt": 1774863150204
+      "version": "1.40.2",
+      "installedAt": 1774908450032
     },
     "feishu-evolver-wrapper": {
       "version": "1.7.1",
@@ -152,6 +152,10 @@
     "openclaw-find-skills": {
       "version": "1.0.0",
       "installedAt": 1774907999376
+    },
+    "self-improving": {
+      "version": "1.2.16",
+      "installedAt": 1774908124624
     }
   }
 }
