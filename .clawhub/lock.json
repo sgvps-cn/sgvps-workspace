@@ -132,6 +132,18 @@
     "perf-profiler": {
       "version": "1.0.0",
       "installedAt": 1774887932286
+    },
+    "seo": {
+      "version": "1.0.3",
+      "installedAt": 1774888284657
+    },
+    "website-monitor": {
+      "version": "1.1.0",
+      "installedAt": 1774888291736
+    },
+    "content-writer": {
+      "version": "1.0.0",
+      "installedAt": 1774888300459
     }
   }
 }
