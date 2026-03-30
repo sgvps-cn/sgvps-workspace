@@ -114,3 +114,58 @@ SEO深度学习: sgvps.cn 首页标题只有6字符"首页_星耀云"
 修复首页标题(后台ZJMF或代码修改)
 
 ---
+
+## [LRN-20260331-005] knowledge_gap
+
+**Logged**: 2026-03-31T03:20:00+08:00
+**Priority**: critical
+**Status**: resolved
+**Area**: backend
+
+### Summary
+sgvps.cn/ZJMF项目深度学习完成
+
+### System Architecture
+- **Framework**: ThinkCMF 3.7.6 (ThinkPHP内核) + ionCube加密
+- **Frontend**: Vue.js组件化前端 (ZdsjuM1主题)
+- **上游**: ZJMF API (柠檬云/折云) 用于服务器开通和库存同步
+- **数据库**: MySQL 175张表
+- **授权**: ionCube Loader 加密所有核心PHP文件
+
+### Key Tables
+- shd_products / shd_product_groups: 产品配置
+- shd_host: 已开通的服务器
+- shd_orders: 订单
+- shd_ticket: 工单
+- shd_clients: 客户
+- shd_configuration: 全局配置
+- shd_seo_settings: SEO设置(通过seo()函数读取)
+- shd_menu / shd_menus: 导航菜单
+
+### SEO标题问题根因
+- 数据库title: "星耀云 - 专业云服务器IDC服务商"
+- 实际显示: "首页_星耀云"
+- 原因: header.html模板用 `{$seo.ymbt}` 或 `[title]_{$setting.company_name}`
+- `[title]`是后台"页面标题"配置项
+- 首页[title]在后台显示为"首页"
+- 解决方案: 后台修改"首页"页面标题，或通过zdsju.php的seo()函数返回值修改
+
+### 可安全修改的部分
+1. 模板文件: /www/wwwroot/www.sgvps.cn/public/themes/web/ZdsjuM1/*.html
+2. CSS: themes/web/ZdsjuM1/style/css/
+3. JS: themes/web/ZdsjuM1/style/js/
+4. banner/广告图片: /www/wwwroot/www.sgvps.cn/upload/
+5. 数据库配置: shd_configuration表
+
+### 不能修改的部分(加密)
+- 所有app/home/controller/*.php
+- app/common.php
+- app/zjmf.php
+- app/zdsju.php
+
+### 二次开发限制
+- ionCube加密=无法安全二次开发核心逻辑
+- 只能做模板修改+数据库配置
+- 如果需要深度定制，需联系ZJMF官方
+
+---
