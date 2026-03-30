@@ -1,0 +1,27 @@
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+node_modules_backup/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temp
+/tmp/
+*.tmp
+*.swp
+
+# Memory
+memory/proactive-monitor.log
+memory/seo-auto-gen.log
+memory/evolution-*.log
