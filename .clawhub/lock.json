@@ -144,6 +144,10 @@
     "content-writer": {
       "version": "1.0.0",
       "installedAt": 1774888300459
+    },
+    "decision-frameworks": {
+      "version": "1.0.0",
+      "installedAt": 1774903323146
     }
   }
 }
