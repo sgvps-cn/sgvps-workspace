@@ -62,3 +62,39 @@
 ## 待完成
 - SSH密码登录禁用（需用户提供公钥）
 - SSH端口改为非标准端口
+
+## 2026-03-31 更新
+
+### Clash代理配置
+- Clash版本: n2023-09-05 (Go 1.21.0)
+- 配置文件: /root/clash/config.yaml
+- 代理端口: 7890(HTTP) 7891(SOCKS5) 7892(redir) 9090(ControlAPI)
+- 控制API认证: 123456:123456
+- 节点: 59个(香港11/日本11/新加坡3/美国2/其他)
+- systemd服务: /etc/systemd/system/clash.service (开机自启)
+- 管理脚本: .clash-manage.sh
+- 主动选优: .clash-auto-switch.sh (每5分钟)
+- AUTO组: 🔧 AUTO-HK(11节点) 🔧 AUTO-JP(9节点) 🚀 AUTO-全球(28节点)
+
+### GLM API
+- 端点: https://open.bigmodel.cn/api/paas/v4/chat/completions
+- 模型: glm-4-flash
+- 用途: SEO文章自动生成
+- 代理: 通过Clash代理访问
+
+### SEO进展
+- 首页标题: ✅ 已修复 (从"首页_星耀云"→"星耀云首页_星耀云")
+- H1标签: ✅ 已修复 (service/support/cps/free)
+- SEO配置: ✅ 已补全 (about/contact/service)
+- 文章: 4篇原创SEO文章写入数据库 (relid 5/7/8/9)
+- 自动生成: .sgvps-article-gen.sh (周三、六11点)
+
+### learnings更新
+- LRN-20260331-006: Clash深度学习
+- ERR-20260331-001/002: MiniMax/GLM API权限问题
+- ERR-20260331-003: ZJMF无博客系统
+- ERR-20260331-004: SEO标题/Alt/Canonical缺失
+
+### 自主决策规则 (SOUL.md已更新)
+- 直接执行: 数据库/SEO/监控/主动汇报
+- 需汇报: 删除/SSH/系统权限/外部发布
