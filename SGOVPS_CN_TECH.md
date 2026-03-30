@@ -392,3 +392,49 @@ SELECT * FROM shd_ticket ORDER BY id DESC LIMIT 5;
 - security-audit-toolkit: 安全审计（已安装）
 - php: PHP安全编码（已安装）
 - code-review-fix: 自动代码审查（已安装）
+
+## 十一、深度研究新发现（2026-03-30 18:20）
+
+### Nginx 配置分析
+- PHP 版本: **7.2**（enable-php-72.conf）
+- SSL: TLSv1.1/TLSv1.2/TLSv1.3 ✅
+- 安全头: HSTS max-age=31536000 ✅
+- 禁用 TLS 1.0/1.1: 否（保留中）
+- 静态资源缓存: CSS/JS 12h, 图片 30d ✅
+
+### Nginx 安全配置亮点
+- 敏感文件访问返回404（.user.ini/.htaccess/.env/.git等）
+- 敏感目录返回404（.git/.svn/.vscode/.idea/.ssh等）
+- SSL certificate: /www/server/panel/vhost/cert/www.sgvps.cn/
+
+### BT-Panel
+- 版本: 未知
+- Python 驱动
+- 插件目录: /www/server/panel/plugin/
+- 数据目录: /www/server/panel/data/
+
+### 数据库连接修复成功
+- MySQL bind-address: 127.0.0.1 ✅
+- 网站数据库连接: 正常 ✅
+
+### 新安装技能
+- ai-web-automation: 网页自动化(表单/抓取/监控)
+- sql-toolkit: SQL数据库工具(查询/设计/迁移)
+- system-resource-monitor: 系统资源监控
+- auto-monitor: 主动监控系统状态
+- code-analyzer: 深度代码分析
+- security-audit-toolkit: 安全审计
+- php: PHP安全编码
+- code-review-fix: 代码审查
+
+### 已掌握业务数据
+- 客户: 5个
+- 订单: 4个（活跃3个）
+- 主机: 3个
+- 产品: 99个（88个上架）
+- 工单: 1个
+- 同步记录: 2375条
+- API配置: 3个上游（折云/柠檬/飞讯）
+
+### 热销产品(前台可见)
+美国专线CN2-B/C/D/E/F, 香港大浦二区B-G, 香港大浦三区B-G, 宁波电信高防4H4G/4H8G/8H8G, 亚太Lite/Pro, 国内/美国高防型
