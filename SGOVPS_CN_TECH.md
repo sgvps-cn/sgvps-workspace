@@ -601,3 +601,73 @@ shd_zjmf_finance_api (上游API)
 - api-endpoint-tester: REST API端点测试
 - system-data-intelligence-skill: 系统级数据分析与可视化（强制触发）
 
+
+## 十四、完整业务系统矩阵（2026-03-30 18:44）
+
+### 产品价格体系
+| 产品 | 月付 | 年付 |
+|---|---|---|
+| 公益香港虚拟主机 | ¥1 | - |
+| 美国专线CN2 轻量云-B | ¥10 | ¥100 |
+| 香港大浦二区-A | ¥15 | ¥150 |
+| 香港大浦二区-B | ¥20 | ¥240 |
+| 亚太 Pro-体验版 | ¥19 | ¥190 |
+| 国内/美国高防型 | ¥5-15 | ¥50-150 |
+
+### 上下游体系（完整）
+```
+3个上游API:
+├─ 折云网络 (zheyunidc.cn) — ZJMF v3 — 268产品
+├─ 柠檬云 (nmvps.com) — ZJMF v3 — 414产品  
+└─ 飞讯网络 (fxas.cn) — ZJMF v10 — 23产品
+
+同步状态: 自动开启(automatic=1), 自动下架(delisting=1)
+```
+
+### 运营风险预警
+⚠️ **库存异常**: 香港大浦一区-B 库存为负数(-7)
+
+### 客户账户详情
+| ID | 用户名 | 邮箱 | 主机 | 状态 |
+|---|---|---|---|---|
+| 888 | 刘海浪 | 936380911@qq.com | 公益香港/10元永久 | Active/Suspended |
+| 889 | 马义彬 | 876854357@qq.com | 深圳BGP弹性实例 | Active (¥1107/季) |
+
+### 核心数据库操作能力
+```sql
+-- 查看客户账户
+SELECT * FROM shd_clients WHERE id=888;
+
+-- 查看客户主机
+SELECT h.*, p.name FROM shd_host h 
+JOIN shd_products p ON h.productid=p.id 
+WHERE h.uid=888;
+
+-- 查看订单
+SELECT * FROM shd_orders WHERE uid=888 ORDER BY id DESC;
+
+-- 修改主机状态
+UPDATE shd_host SET domainstatus='Suspended' WHERE id=9;
+UPDATE shd_host SET domainstatus='Active' WHERE id=9;
+
+-- 产品上架/下架
+UPDATE shd_products SET hidden=0 WHERE id=35;  -- 上架
+UPDATE shd_products SET hidden=1 WHERE id=35;  -- 下架
+
+-- 价格修改
+UPDATE shd_pricing SET monthly=99.00 WHERE relid=产品ID AND type='product';
+
+-- 查看同步异常
+SELECT * FROM shd_inventory_synchronization_record 
+WHERE local_inventory < 0 ORDER BY id DESC;
+```
+
+### 系统完整性检测
+- [x] APP_DEBUG = false
+- [x] MySQL bind = 127.0.0.1
+- [x] ionCube Loader 运行
+- [x] SSL 证书有效(2026-11-11)
+- [x] 防火墙(nftables) 配置
+- [ ] SSH 密码登录 (待加固)
+- [ ] 库存数据异常 (待处理)
+- [ ] BT-Panel 端口 (需评估)
