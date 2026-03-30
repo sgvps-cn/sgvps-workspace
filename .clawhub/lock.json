@@ -19,11 +19,11 @@
     },
     "evolver": {
       "version": "1.40.0",
-      "installedAt": 1774819937234
+      "installedAt": 1774841542799
     },
     "feishu-evolver-wrapper": {
       "version": "1.7.1",
-      "installedAt": 1774819942309
+      "installedAt": 1774841547342
     },
     "memory-self-heal": {
       "version": "1.1.0",
@@ -72,6 +72,18 @@
     "chatbot-engine": {
       "version": "1.0.0",
       "installedAt": 1774832612496
+    },
+    "empathy": {
+      "version": "1.0.0",
+      "installedAt": 1774841868089
+    },
+    "chat-analyzer": {
+      "version": "1.0.1",
+      "installedAt": 1774841870686
+    },
+    "context-recovery": {
+      "version": "1.2.2",
+      "installedAt": 1774841873386
     }
   }
 }
