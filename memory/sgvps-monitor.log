@@ -109,3 +109,7 @@ HTTP: 200 | 响应: 0.274215s
 DNS: www.sgvps.cn.a1.initac.com.
 ---
 === sgvps.cn 监控 Tue Mar 31 07:00:01 AM CST 2026 ===
+SSL到期: Nov 11 15:38:06 2026 GMT
+HTTP: 200 | 响应: 0.252000s
+DNS: www.sgvps.cn.a1.initac.com.
+---
