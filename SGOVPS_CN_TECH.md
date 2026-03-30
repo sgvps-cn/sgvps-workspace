@@ -190,7 +190,27 @@ mysqldump -u www_sgvps_cn -p'p6dd5z992Bpc8CQR' www_sgvps_cn > ~/backup_$(date +%
 - ✅ 响应时间监控
 - ✅ VPS 进程守护
 
-## 七、待处理项
+## 七、后台管理能力
+
+### 数据库直接管理
+```bash
+mysql -u www_sgvps_cn -p'p6dd5z992Bpc8CQR' -h localhost www_sgvps_cn
+```
+
+### 可操作的数据表
+- `shd_clients` - 客户账户
+- `shd_orders` - 订单
+- `shd_user_products` - 已购产品
+- `shd_products` - 产品目录
+- `shd_product_config_options` - 配置选项
+- `shd_configuration` - 系统配置
+- `shd_tickets` - 工单
+- `shd_api` - API配置
+
+### 已知客户
+- 刘海浪 (ID 888, 936380911@qq.com, 注册 2025-11-22)
+
+## 八、待处理项
 
 - [ ] **立即修复 APP_DEBUG=true**（`/think` 文件）
 - [ ] 升级 PHP 7.2 → 8.x
