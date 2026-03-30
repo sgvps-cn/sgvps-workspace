@@ -1,0 +1,17 @@
+[Unit]
+Description=Evolver Loop Daemon
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/.openclaw/evolver
+EnvironmentFile=/root/.openclaw/evolver/.env
+ExecStart=/usr/bin/node /root/.openclaw/evolver/index.js --loop
+Restart=on-failure
+RestartSec=30
+StandardOutput=append:/root/.openclaw/workspace/memory/evolver-loop.log
+StandardError=append:/root/.openclaw/workspace/memory/evolver-loop.log
+
+[Install]
+WantedBy=multi-user.target
