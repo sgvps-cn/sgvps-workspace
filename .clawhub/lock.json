@@ -148,6 +148,10 @@
     "decision-frameworks": {
       "version": "1.0.0",
       "installedAt": 1774903323146
+    },
+    "openclaw-find-skills": {
+      "version": "1.0.0",
+      "installedAt": 1774907999376
     }
   }
 }
