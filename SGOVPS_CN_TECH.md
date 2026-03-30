@@ -892,3 +892,39 @@ AddNews (添加文章), AddCustomTemplateFields (自定义字段)
 2. 马义彬是唯一完成实名的客户（有利于业务合规）
 3. 余额系统基于 shd_credit 表
 
+
+## 十九、SEO和内容运营研究（2026-03-30 19:22）
+
+### SEO配置
+- Meta keywords: 云服务器,海外云服务器,物理机,虚拟主机,高防服务器
+- 描述: 星耀云 - 年份错误("创于年")
+- 百度蜘蛛: 已允许 (robots.txt)
+- Sitemap: 已配置 (96个URL)
+- Baidu收录: 已推送sitemap
+
+### Sitemap内容分析
+- 首页: /
+- 购物车: /cart, /cart?action=configureproduct&pid=X (35个产品)
+- 页面: /contact.html, /help.html, /market.html, /server.html, /ssl.html
+- 新闻: /news.html, /newsarticle/{id}.html, /newscategory/{id}.html
+- 工单: /submitticket, /support.html
+
+### 内容系统状态
+| 系统 | 状态 |
+|---|---|
+| 新闻文章 | 0篇（表为空）|
+| 帮助文章 | 0篇 |
+| 知识库 | 0篇 |
+| 新闻分类 | 4个（新闻公告/帮助中心/服务条款/免费虚拟主机领取）|
+
+### SEO问题
+1. 网站描述"创于年"年份为空，需要修复
+2. 新闻/帮助内容完全空白（无内容运营）
+3. blog.sgvps.cn 也未配置
+
+### 百度SEO建议
+- 定期更新新闻/帮助文章
+- 填充知识库内容
+- 修复网站描述年份
+- 考虑配置 blog.sgvps.cn 作为内容营销站
+
