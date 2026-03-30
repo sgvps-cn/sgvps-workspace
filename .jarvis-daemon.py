@@ -152,20 +152,21 @@ def check_system():
     return checks
 
 def check_orders():
-    """新订单检查"""
+    """新订单检查 - 只报告今天新建的订单"""
     results = []
     
-    # 待处理订单
-    pending = db_query("SELECT COUNT(*) FROM shd_orders WHERE status='Pending'")
-    if pending and int(pending) > 0:
-        results.append(f"🛒 待处理订单: {pending}")
-    
-    # 新订单(最近1小时)
-    new_orders = db_query(
-        "SELECT COUNT(*) FROM shd_orders WHERE create_time > UNIX_TIMESTAMP(NOW() - 3600)"
+    # 待处理订单（只报告今天新建的）
+    today = db_query(
+        "SELECT COUNT(*) FROM shd_orders WHERE create_time > UNIX_TIMESTAMP(CURDATE())"
     )
-    if new_orders and int(new_orders) > 0:
-        results.append(f"🛒 新订单(1h): {new_orders}")
+    if today and int(today) > 0:
+        results.append(f"🛒 今日新订单: {today}")
+    
+    # 历史上遗留的Pending订单（不告警，只记录）
+    state = get_state()
+    old_pending = db_query("SELECT COUNT(*) FROM shd_orders WHERE status='Pending'")
+    if old_pending and int(old_pending) > 0:
+        state["old_pending_orders"] = int(old_pending)
     
     return results
 
