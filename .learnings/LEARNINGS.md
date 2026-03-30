@@ -265,3 +265,50 @@ Evolver工作流:
 - evolver --dry-run可以测试
 
 ---
+
+## [LRN-20260331-008] knowledge_gap
+
+**Logged**: 2026-03-31T08:00:00+08:00
+**Priority**: high
+**Status**: resolved
+**Area**: feishu
+
+### Summary
+飞书深度学习：57个权限，27个可用
+
+### 飞书App信息
+- App ID: cli_a943e4427838dcd1
+- Token: t-g1043v7PXWIOSWRMHOUKUEKNO2IPUC6HNT6JD7X4
+
+### 已确认可用能力
+1. **消息发送** ✅ - send message
+2. **创建群聊** ✅ - chat creation
+3. **多维表格(Bitable)** ✅ - business monitoring
+4. **云文档** ✅ - docx read/write
+5. **知识库(Wiki)** ✅ - wiki read/write
+6. **获取用户信息** ✅ - user profile
+7. **获取群信息** ✅ - chat info
+
+### 需要开通权限
+- **日历(calendar)** ❌ - 需要在飞书开放平台申请
+- **任务(Tasks)** ❌ - 需要单独申请
+
+### Bitable业务监控
+- App Token: KQZ0bUqK1aNzqNstLpjcrLvDnQf
+- Table: tbl8M9XPQDYQO9cq (主机监控)
+- 同步脚本: .feishu-bitable-sync.py (每小时更新)
+
+### 主机监控Bitable表结构
+- 主机名(text), 状态(select), IP(text), 产品(text), 到期时间(date), 续费状态(select)
+- 已有2条主机记录
+
+### 守护进程已整合
+- 每小时同步Bitable业务指标
+- 告警推飞书
+
+### API端点
+- 获取token: POST https://open.feishu.cn/open-apis/auth/v3/tenant_access_token
+- 发消息: POST https://open.feishu.cn/open-apis/im/v1/messages
+- 创建群: POST https://open.feishu.cn/open-apis/im/v1/chats
+- Bitable记录: https://open.feishu.cn/open-apis/bitable/v1/apps/{app_token}/tables/{table_id}/records
+
