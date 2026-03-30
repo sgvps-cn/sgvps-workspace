@@ -521,3 +521,83 @@ SELECT * FROM shd_ticket ORDER BY id DESC LIMIT 5;
 ### 已安装完整技能列表(29个)
 minimax-multimodal-toolkit, playwright, self-improving-agent, find-skills-skill, evolver, memory-self-heal, recursive-self-improvement, self-health-monitor, inner-life-evolve, inner-life-core, host-hardening, vps-maintenance, empathy, chat-analyzer, context-recovery, chatbot-engine, zh-humanizer, monitoring, docker-manager, docker-essentials, ai-web-automation, sql-toolkit, system-resource-monitor, auto-monitor, code-analyzer, security-audit-toolkit, php, code-review-fix, sgvps-monitor
 
+
+## 十三、代码结构深度分析（2026-03-30 18:35）
+
+### 架构概览
+```
+ThinkCMF 3.7.6 + ThinkPHP 5.1
+├── app/
+│   ├── home/         # 用户前台（ionCube加密）
+│   ├── admin/        # 管理后台（ionCube加密）
+│   ├── api/          # API接口（ionCube加密）
+│   ├── openapi/      # 开放API（ionCube加密）
+│   ├── common/       # 公共模块（少量明文）
+│   └── queue/        # 队列任务
+├── public/
+│   ├── themes/       # 前端模板（HTML/CSS/JS可读）
+│   └── index.php     # 网站入口
+├── data/             # 路由配置（加密）
+└── vendor/           # Composer依赖（ThinkPHP等）
+```
+
+### URL路由结构（从模板分析）
+| 路径 | 说明 |
+|---|---|
+| `/cart` | 购物车 |
+| `/cart?action=configureproduct&pid=X` | 产品配置 |
+| `/host` | 主机管理 |
+| `/order` | 订单管理 |
+| `/ticket` | 工单系统 |
+| `/finance` | 财务中心 |
+| `/free.html` | 免费主机 |
+| `/actcloud.html` | 活动云 |
+| `/product/ecs.html` | 云服务器产品 |
+
+### 前端技术栈（从HTML分析）
+- jQuery（前端交互）
+- layui/css（样式框架）
+- 静态资源CDN化
+- Vue/React 未知（ionCube保护）
+
+### 数据库核心关系
+```
+shd_clients (客户)
+    ├── shd_orders (订单, uid→id)
+    ├── shd_host (主机, uid→id)
+    ├── shd_ticket (工单, uid→id)
+    ├── shd_invoices (发票, uid→id)
+    └── shd_credit (信用, uid→id)
+
+shd_products (产品)
+    ├── shd_product_groups (组, gid→id)
+    ├── shd_pricing (价格, relid→id)
+    ├── shd_product_config_options (配置项, gid→id)
+    └── shd_inventory_synchronization_record (库存)
+
+shd_zjmf_finance_api (上游API)
+    └── shd_products (zjmf_api_id→id, upstream_pid=上游产品ID)
+```
+
+### 关键业务流程（从URL和数据反推）
+1. **产品选购流程**：`/cart?action=configureproduct&pid=X&config[Y]=Z`
+2. **订单创建流程**：`shd_orders` → `shd_host` 自动创建
+3. **同步机制**：`shd_inventory_synchronization_record` 记录每次同步
+4. **上游对接**：ZJMF API v3/v10 协议，支持产品导入/库存同步
+
+### 安全机制
+- ionCube 源码加密（95%业务逻辑）
+- 数据库凭证硬编码在 PHP 文件
+- ThinkPHP 5.1 框架自带 CSRF/XSS 防护
+- 后台独立入口 `/admin888/`
+
+### 前端可分析信息
+- HTML模板：52个页面
+- JS文件：1242个
+- CSS框架：layui + 自定义样式
+- 静态资源：CDN托管
+
+### 新安装技能
+- api-endpoint-tester: REST API端点测试
+- system-data-intelligence-skill: 系统级数据分析与可视化（强制触发）
+

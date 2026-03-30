@@ -116,6 +116,14 @@
     "auto-monitor": {
       "version": "1.0.0",
       "installedAt": 1774866249843
+    },
+    "api-endpoint-tester": {
+      "version": "1.0.1",
+      "installedAt": 1774867056557
+    },
+    "system-data-intelligence-skill": {
+      "version": "1.0.0",
+      "installedAt": 1774867069967
     }
   }
 }
