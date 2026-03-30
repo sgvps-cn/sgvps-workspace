@@ -232,6 +232,24 @@ def check_cron():
     
     return results
 
+def run_self_repair():
+    """自主修复引擎 - 发现问题自动修复"""
+    try:
+        result = subprocess.run(
+            [sys.executable, "/root/.openclaw/workspace/.self-repair.py"],
+            capture_output=True, text=True, timeout=120
+        )
+        lines = result.stdout.strip().split("\n")
+        fixed = [l for l in lines if "✅" in l or "⚠️" in l]
+        if fixed:
+            for f in fixed:
+                log(f"自我修复: {f}")
+            # 重要修复推飞书
+            if any("killed" in f.lower() or "restart" in f.lower() or "error" in f.lower() for f in fixed):
+                feishu_send("🔧 贾维斯自我修复\n" + "\n".join(fixed[:5]))
+    except Exception as e:
+        log(f"自主修复失败: {e}")
+
 # ========== 主循环 ==========
 
 def run_checks():
@@ -283,6 +301,9 @@ def main():
     
     # 每5分钟执行一次检查
     scheduler.add_job(run_checks, "interval", minutes=5, id="main_check")
+    
+    # 每小时运行一次自主修复
+    scheduler.add_job(run_self_repair, "interval", hours=1, id="self_repair")
     
     # 启动时立即执行一次
     run_checks()

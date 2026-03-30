@@ -232,3 +232,36 @@ Clash深度学习完成
 - 系统环境变量无proxy设置（无需设置，走我配置的代理）
 
 ---
+
+## [LRN-20260331-007] knowledge_gap
+
+**Logged**: 2026-03-31T07:30:00+08:00
+**Priority**: high
+**Status**: pending
+**Area**: infra
+
+### Summary
+Evolver自我进化引擎已接入jarvis-daemon
+
+### Details
+Evolver位置: /root/.openclaw/evolver/
+- 独立安装，有自己的node_modules和.env
+- 健康检查: src/ops/health_check.js (系统/内存/磁盘/进程数)
+- 自我修复: src/ops/self_repair.js (git fetch/rebase abort/lock清理)
+- 进化循环: index.js run [--loop]
+
+Evolver工作流:
+1. 运行进化周期，生成改进
+2. 输出JSON状态报告，等待确认
+3. 运行solidify固化更改
+4. EvoMap同步
+
+### 接入方式
+守护进程每5分钟检查一次健康状态，发现问题立即修复
+
+### TODO
+- 搞清楚Evolver循环怎么触发（--loop模式还是定时调用）
+- evolver运行时需要A2A_NODE_SECRET环境变量
+- evolver --dry-run可以测试
+
+---
