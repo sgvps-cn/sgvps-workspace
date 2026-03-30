@@ -124,6 +124,14 @@
     "system-data-intelligence-skill": {
       "version": "1.0.0",
       "installedAt": 1774867069967
+    },
+    "database-operations": {
+      "version": "1.0.0",
+      "installedAt": 1774887922171
+    },
+    "perf-profiler": {
+      "version": "1.0.0",
+      "installedAt": 1774887932286
     }
   }
 }
