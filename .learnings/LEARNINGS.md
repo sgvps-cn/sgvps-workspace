@@ -169,3 +169,66 @@ sgvps.cn/ZJMF项目深度学习完成
 - 如果需要深度定制，需联系ZJMF官方
 
 ---
+
+## [LRN-20260331-006] knowledge_gap
+
+**Logged**: 2026-03-31T05:50:00+08:00
+**Priority**: medium
+**Status**: resolved
+**Area**: infra
+
+### Summary
+Clash深度学习完成
+
+### System Info
+- 版本: Clash n2023-09-05-gdcc8d87 (Go 1.21.0)
+- 配置文件: /root/clash/config.yaml
+- 运行端口:
+  - 7890: HTTP代理 ✅
+  - 7891: SOCKS5代理 ✅  
+  - 7892: RedirPort (未监听，透明代理未配置)
+  - 9090: Clash控制API (RESTful) ✅
+- 控制口认证: 123456:123456
+
+### 代理节点清单
+共59个节点，包括:
+- 🇭🇰 香港: 11个 (IEPL专线/x0.8折扣/下载专用)
+- 🇯🇵 日本: 11个 (IEPL专线/免费节点/下载专用)
+- 🇸🇬 新加坡: 3个 (IEPL专线/x2倍率)
+- 🇺🇲 美国: 2个 (IEPL专线/x1.5倍率)
+- 其他: 台湾/英国/阿根廷/俄罗斯/土耳其/韩国/印度/德国/加拿大/澳大利亚/法国/乌克兰
+
+### 代理组配置
+| 组名 | 类型 | 说明 |
+|---|---|---|
+| GLOBAL | Selector | 手动选择节点 |
+| Auto | URL Test | 自动选最快节点 |
+| 国内网站 | Selector | 国内站点直连 |
+| 漏网之鱼 | Selector | 未匹配流量 |
+| 学术网站 | Selector | 学术资源代理 |
+| ☁️ OneDrive | Selector | OneDrive专用 |
+| 🎮 Steam | Selector | Steam下载/商店 |
+| 🌏 爱奇哩哔哩 | Selector | 视频网站 |
+
+### Control API (端口9090)
+通过 `curl -u "123456:123456" http://127.0.0.1:9090/{endpoint}` 调用
+
+可用端点:
+- GET /proxies - 所有代理信息
+- GET /proxies/{name} - 单个代理详情
+- PUT /proxies/{name} - 切换代理 (需是Selector类型)
+- GET /providers/proxies - 提供商快照
+- GET /configs - 当前配置
+- PUT /configs - 更新配置
+
+### 实际用途
+1. 我可以用API动态切换代理节点
+2. 可以自动测试节点延迟并选最优
+3. 可以给不同流量自动分配不同代理
+4. HTTP代理(7890)已可用，SOCKS5(7891)也通
+
+### 待解决问题
+- 7892 RedirPort未监听，无法做Linux系统级透明代理
+- 系统环境变量无proxy设置（无需设置，走我配置的代理）
+
+---
