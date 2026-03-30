@@ -316,3 +316,56 @@ UPDATE shd_product_config_options SET hidden=1 WHERE id=选项ID;
 - [ ] 删除 `public/.idea`
 - [ ] 数据库远程访问加固
 - [ ] 建立自动备份策略
+
+## 八、后台操作能力详解
+
+### 产品同步（Import/Sync）
+- 三个上游API：折云网络(zheyunidc) 268产品 | 柠檬云(nmvps) 414产品 | 飞讯网络(fxas) 23产品
+- `shd_inventory_synchronization_record` - 每次同步的详细记录
+- `shd_inventory_synchronization_config` - 同步配置（开启状态、自动/手动）
+- status=0: 库存一致 | status=1: 已同步
+- method=0: 手动同步 | method=1: 自动cron同步
+
+### 商品编辑（Edit Product）
+```sql
+UPDATE shd_products SET name='新名称' WHERE id=产品ID;
+UPDATE shd_products SET hidden=1 WHERE id=产品ID;  -- 下架
+UPDATE shd_products SET hidden=0 WHERE id=产品ID;  -- 上架
+UPDATE shd_products SET auto_setup='payment' WHERE id=产品ID;
+```
+
+### 批量上下架
+```sql
+UPDATE shd_products SET hidden=0 WHERE gid=组ID;  -- 批量上架
+UPDATE shd_products SET hidden=1 WHERE gid=组ID;  -- 批量下架
+```
+
+### 客户产品管理（shd_host）
+- `domainstatus` = Active/Suspended/Terminated
+- `dedicatedip` = 分配IP
+- `dcimid` = 上游DCIM ID
+```sql
+SELECT h.id, h.domain, h.dedicatedip, h.domainstatus, p.name FROM shd_host h JOIN shd_products p ON h.productid=p.id LIMIT 10;
+UPDATE shd_host SET domainstatus='Suspended' WHERE id=主机ID;
+UPDATE shd_host SET domainstatus='Active' WHERE id=主机ID;
+```
+
+### 价格管理
+```sql
+UPDATE shd_products SET upstream_price_value=120.00 WHERE upstream_price_type='percent';  -- 加价20%
+UPDATE shd_pricing SET monthly=99.00 WHERE relid=产品ID AND type='product';
+```
+
+### 常用运维SQL
+```sql
+-- 活跃主机
+SELECT h.domain, h.dedicatedip, c.username FROM shd_host h JOIN shd_clients c ON h.uid=c.id WHERE h.domainstatus='Active';
+
+-- 库存异常（为负）
+SELECT product_name, local_inventory FROM shd_inventory_synchronization_record WHERE local_inventory<0 ORDER BY id DESC LIMIT 10;
+
+-- 最新工单
+SELECT * FROM shd_ticket ORDER BY id DESC LIMIT 5;
+```
+
+## 九、待处理项
