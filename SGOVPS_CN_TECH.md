@@ -369,3 +369,26 @@ SELECT * FROM shd_ticket ORDER BY id DESC LIMIT 5;
 ```
 
 ## 九、待处理项
+
+## 十、安全审计新发现（2026-03-30）
+
+### 新发现漏洞
+1. **MySQL监听所有接口** - 0.0.0.0:3306，数据库需限制为127.0.0.1
+2. **BT-Panel端口开放** - 888和22036，需确认防火墙是否已管控
+3. **SSH密码登录+22端口** - 已有方案，需用户提供公钥
+
+### PHP安全配置
+- disable_functions: 已正确配置（危险函数已禁用）
+- allow_url_fopen: On（需评估是否必要）
+- open_basedir: 未设置（可考虑启用）
+
+### 代码分析结论
+- **ionCube加密保护**：95%业务代码已加密，无法分析源码
+- ThinkCMF 3.7.6 + ThinkPHP 5.1（LTS）
+- 核心业务逻辑无法通过静态分析获取
+
+### 新安装代码分析技能
+- code-analyzer: 深度代码架构分析（已安装）
+- security-audit-toolkit: 安全审计（已安装）
+- php: PHP安全编码（已安装）
+- code-review-fix: 自动代码审查（已安装）

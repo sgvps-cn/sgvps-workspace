@@ -84,6 +84,22 @@
     "context-recovery": {
       "version": "1.2.2",
       "installedAt": 1774841873386
+    },
+    "code-analyzer": {
+      "version": "1.0.0",
+      "installedAt": 1774865840536
+    },
+    "security-audit-toolkit": {
+      "version": "1.0.0",
+      "installedAt": 1774865843297
+    },
+    "php": {
+      "version": "1.0.1",
+      "installedAt": 1774865846277
+    },
+    "code-review-fix": {
+      "version": "1.0.0",
+      "installedAt": 1774865865153
     }
   }
 }
