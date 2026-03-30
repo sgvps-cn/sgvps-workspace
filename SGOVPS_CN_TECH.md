@@ -671,3 +671,76 @@ WHERE local_inventory < 0 ORDER BY id DESC;
 - [ ] SSH 密码登录 (待加固)
 - [ ] 库存数据异常 (待处理)
 - [ ] BT-Panel 端口 (需评估)
+
+## 十五、系统完整能力矩阵（2026-03-30 18:51）
+
+### 支付系统
+| 方式 | 状态 | 配置 |
+|---|---|---|
+| 支付宝 (AliPay) | ✅ 开通 | Ali认证配置 |
+| 微信支付 | ❌ 已禁用 | allow_wechat=0 |
+| 企业微信机器人 | ✅ 已配置 | 告警通知 |
+| SMTP邮件 | ✅ 已配置 | smtp.163.com |
+
+### 通知系统
+| 类型 | 配置 |
+|---|---|
+| 短信运营商 | NathansSMS |
+| 人工自动消息 | artificial_auto_send_msg=0 |
+| 邮件注册验证码 | allow_email_register_code=1 |
+| 邮件登录验证码 | allow_login_email_captcha=0 |
+
+### 前台功能路由（JS提取完整列表）
+```
+用户账户: /login, /logout, /bind_email, /bind_phone, /change_email, /modify_password
+主机管理: /dcim/buy_reinstall, /dcim/reinstall, /dcim/rescue, /dcim/novnc, /dcim/crack_pass
+账单财务: /billing, /viewbilling, /credit_limit/prepayment
+工单系统: /supporttickets, /viewticket, /ticket/reply
+新闻知识: /news, /newsview, /knowledgebase
+服务器: /serverManageList, /servicedetail, /dataCentr
+API接口: /provision/button, /provision/custom, /host/autorenew
+认证: /verify, /second_verify_send, /login/second_verify_page
+```
+
+### 后台功能模块（Vue SPA路由）
+```
+Finance (财务), BillDetail (账单明细), EmailEdit (邮件编辑)
+SmsTemplateIndex (短信模板), GroupList (用户组), General (通用配置)
+AddNews (添加文章), AddCustomTemplateFields (自定义字段)
+等完整Vue组件化后台管理系统
+```
+
+### 数据库直接操作能力（100%覆盖）
+| 操作 | SQL | 状态 |
+|---|---|---|
+| 客户CRUD | shd_clients | ✅ |
+| 订单管理 | shd_orders | ✅ |
+| 主机管理 | shd_host | ✅ |
+| 产品上下架 | shd_products.hidden | ✅ |
+| 价格调整 | shd_pricing | ✅ |
+| 工单处理 | shd_ticket | ✅ |
+| 配置修改 | shd_configuration | ✅ |
+| 同步控制 | shd_inventory_synchronization_config | ✅ |
+
+### 尚无法掌握的部分（ionCube限制）
+| 部分 | 限制 | 替代方案 |
+|---|---|---|
+| 后台控制器源码 | 完全不可读 | 通过数据库和URL反推业务逻辑 |
+| 核心业务逻辑 | 无法分析 | 通过日志和操作结果推断 |
+| PHP-FPM配置 | 无权限查看 | 通过前台行为验证 |
+| ThinkCMF内核 | 加密保护 | 通过数据库模型反推 |
+
+### 主动监控已就位
+- ✅ 网站可达性（每小时）
+- ✅ SSL证书到期（2026-11-11）
+- ✅ VPS系统资源（CPU/内存/磁盘）
+- ✅ 进程守护（Evolver/Gateway/心跳）
+- ✅ 同步异常告警
+- ✅ Git autosync（每小时）
+
+### 待处理项
+1. ⚠️ SSH密码登录（需提供公钥）
+2. ⚠️ 香港大浦一区-B库存为负（需手动修复）
+3. ⚠️ 微信支付已禁用（allow_wechat=0）
+4. ⚠️ 人工自动消息关闭（artificial_auto_send_msg=0）
+
