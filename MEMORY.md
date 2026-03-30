@@ -17,12 +17,17 @@
 
 ## VPS 信息
 - 提供商: 星耀云 (www.sgvps.cn)
-- 操作系统: Linux 5.15.0-100-generic
+- 操作系统: CentOS (宝塔)
+- CPU: Intel Xeon Platinum 8336C × 4核
+- 内存: 3.8GB | 磁盘: 40GB (34%使用)
 - SSH端口: 22 (待改为非标准)
 - 密码登录: 已开启 (高危，待禁用，需用户提供公钥)
+- MySQL: bind=127.0.0.1 ✅
 - Fail2Ban: 运行中 ✅
 - BBR: 已启用 ✅
-- nftables防火墙: 已配置，开放 22/80/443/18789/22036 ✅
+- nftables防火墙: 已配置 ✅
+- ionCube Loader: 已加载 ✅
+- SSL证书: 有效至2026-11-11 ✅
 
 ## API Keys
 - MiniMax API Key: sk-cp-krF2y3KPtHrqZvZgQo7oE2MS1EQodT8WapCQk3IVMIiCDlQopgWNPUtrrT1LJ0xsVyI35t231VB54Wyt-Tg4-thFwfc2qGFrWRzlBN8snoF2gGfzjQtcIYU
@@ -44,6 +49,9 @@
 - 2026-03-30: 建立完整自主循环：每小时git-sync + 每日自审 + EvoMap学习
 - 2026-03-30: 研究星耀云 VPS，完成安全加固（BBR+防火墙）
 - 2026-03-30: 安装 vps-maintenance + host-hardening 技能
+- 2026-03-30: sgvps.cn深度研究完成（ThinkCMF架构+175表+上下游+业务流程）
+- 2026-03-30: MySQL bind-address修复（0.0.0.0→127.0.0.1）
+- 2026-03-30: 安装29个skills，覆盖沟通/代码/监控/自动化全方向
 
 ## 用户偏好
 - 简洁、可执行优先，讨厌废话和填充词

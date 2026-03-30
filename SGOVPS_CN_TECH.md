@@ -438,3 +438,86 @@ SELECT * FROM shd_ticket ORDER BY id DESC LIMIT 5;
 
 ### 热销产品(前台可见)
 美国专线CN2-B/C/D/E/F, 香港大浦二区B-G, 香港大浦三区B-G, 宁波电信高防4H4G/4H8G/8H8G, 亚太Lite/Pro, 国内/美国高防型
+
+## 十二、完整系统快照（2026-03-30 18:30）
+
+### VPS硬件资源
+| 资源 | 规格 |
+|---|---|
+| CPU | Intel Xeon Platinum 8336C × 4核 (2.2GHz) |
+| 内存 | 3.8GB DDR4 |
+| 磁盘 | 40GB SSD (/dev/vda2) |
+| 已用 | 13GB (34%) |
+| 可用 | 25GB |
+| 运行时间 | ~18小时 |
+| 负载 | 0.20 (极低) |
+
+### 软件环境
+| 组件 | 版本 |
+|---|---|
+| OS | CentOS (宝塔) |
+| PHP | 7.2 (ionCube加密) |
+| MySQL | 5.7.44 |
+| Nginx | 1.22.1 |
+| ionCube Loader | ✅ 已加载 |
+
+### Nginx运行状态
+- 总连接: 4213 accepts
+- 总请求: 6531 requests
+- 当前活跃: 3
+- Reading: 0, Writing: 2, Waiting: 1
+
+### SSL证书
+- 到期: 2026-11-11 ✅
+- 协议: TLSv1.1/TLSv1.2/TLSv1.3
+
+### 业务数据完整快照
+| 指标 | 数值 |
+|---|---|
+| 客户总数 | 5 |
+| 活跃客户 | 3 (刘海浪/马义彬等) |
+| 产品总数 | 99 (上架88) |
+| 主机总数 | 3 |
+| 订单总额 | ¥1127 |
+| 活跃收入 | ¥1107 |
+| 发票总额 | ¥2214 (已付) |
+
+### 客户详情
+1. 刘海浪 (ID 888) - 936380911@qq.com
+   - 公益香港虚拟主机 (已暂停)
+   - 10元永久虚拟主机 (Active)
+2. 马义彬 (ID 889) - 876854357@qq.com
+   - 深圳BGP弹性实例 (Active, IP: 103.236.60.59)
+3-5. 其他客户 (匿名/未实名)
+
+### 功能开关
+- 分销系统(Affiliate): ✅ 启用
+- 实名认证: ✅ 启用 (Ali认证)
+- 工单系统: ✅ 启用 (3个部门)
+
+### 系统安全状态
+| 项目 | 状态 |
+|---|---|
+| MySQL本地化 | ✅ 已修复 |
+| ionCube加密 | ✅ 运行中 |
+| SSH密码登录 | ⚠️ 开启 (待加固) |
+| 防火墙 | ✅ nftables |
+| SSL证书 | ✅ 有效 |
+| Fail2Ban | ✅ 运行中 |
+| BBR | ✅ 已启用 |
+
+### 网站页面
+| 页面 | 状态 |
+|---|---|
+| / | ✅ 200 |
+| /actcloud.html | ✅ 200 |
+| /free.html | ✅ 200 |
+| /about.html | ✅ 200 |
+| /contact.html | ✅ 200 |
+| /market.html | ✅ 200 |
+| /cloud.html | ⚠️ 302重定向 |
+| /management.html | ⚠️ 302重定向 |
+
+### 已安装完整技能列表(29个)
+minimax-multimodal-toolkit, playwright, self-improving-agent, find-skills-skill, evolver, memory-self-heal, recursive-self-improvement, self-health-monitor, inner-life-evolve, inner-life-core, host-hardening, vps-maintenance, empathy, chat-analyzer, context-recovery, chatbot-engine, zh-humanizer, monitoring, docker-manager, docker-essentials, ai-web-automation, sql-toolkit, system-resource-monitor, auto-monitor, code-analyzer, security-audit-toolkit, php, code-review-fix, sgvps-monitor
+
