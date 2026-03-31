@@ -4,12 +4,24 @@
 核心原则：只报告真正修了的，例行检查不报告（诚实原则）
 """
 
-import os, sys, json, subprocess, time, re
+import os, sys, json, subprocess, time, re, random
 from datetime import datetime
 
 LOG = "/root/.openclaw/workspace/memory/self-repair.log"
 STATE_FILE = "/root/.openclaw/workspace/memory/self-repair-state.json"
 MAX_LOG_SIZE_MB = 10
+
+def jitter_backoff(attempt, base=1, max_delay=32, jitter_range=0.5):
+    """
+    指数退避 + jitter（防止惊群）
+    attempt: 重试次数（0起）
+    base: 基础延迟秒数
+    max_delay: 最大延迟秒数
+    jitter_range: jitter 比例（0-1），0.5 表示 ±50%
+    """
+    delay = min(base * (2 ** attempt), max_delay)
+    jitter = delay * jitter_range * (2 * random.random() - 1)
+    return max(0.1, delay + jitter)
 
 def log(msg):
     ts = datetime.now().strftime("%m-%d %H:%M")
@@ -127,7 +139,7 @@ def repair_procs():
         _, wrapper_out, _ = cmd("ps aux | grep 'nohup.*clash -d' | grep -v grep | awk '{print $2}'")
         wrapper_pids = [p for p in wrapper_out.strip().split("\n") if p]
         if wrapper_pids:
-            time.sleep(5)
+            time.sleep(jitter_backoff(0, base=1, max_delay=8))
             _, out2, _ = cmd("pgrep -a clash 2>/dev/null")
             lines2 = [l for l in out2.strip().split("\n") if l and "./clash" in l]
             if not lines2:
@@ -145,13 +157,25 @@ def repair_procs():
 # ─── Gateway ────────────────────────────────────────────────────
 def repair_gateway():
     repaired = []
+    # 第一次检查
     ok, code, _ = cmd("curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18789/ 2>/dev/null", timeout=5)
-    if not ok or code != "200":
-        log(f"  ⚠️ Gateway响应异常({code})，重启")
-        cmd("openclaw gateway restart 2>/dev/null", timeout=15)
-        time.sleep(3)
-        ok2, code2, _ = cmd("curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18789/ 2>/dev/null", timeout=5)
-        repaired.append("gateway_restart_ok" if (ok2 and code2 == "200") else "gateway_restart_failed")
+    if ok and code == "200":
+        return repaired
+
+    # 第一次失败，重试2次（指数退避）
+    for attempt in range(2):
+        log(f"  ⚠️ Gateway响应异常({code})，重试中 (attempt {attempt+1}/2)")
+        time.sleep(jitter_backoff(attempt, base=1, max_delay=8))
+        ok, code, _ = cmd("curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18789/ 2>/dev/null", timeout=5)
+        if ok and code == "200":
+            return repaired
+
+    # 重试都失败，执行重启
+    log(f"  ⚠️ Gateway持续异常({code})，执行重启")
+    cmd("openclaw gateway restart 2>/dev/null", timeout=15)
+    time.sleep(jitter_backoff(0, base=1, max_delay=8))
+    ok2, code2, _ = cmd("curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18789/ 2>/dev/null", timeout=5)
+    repaired.append("gateway_restart_ok" if (ok2 and code2 == "200") else "gateway_restart_failed")
     return repaired
 
 # ─── 重复进程 ───────────────────────────────────────────────────
