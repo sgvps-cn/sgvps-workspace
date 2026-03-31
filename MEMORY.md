@@ -59,7 +59,27 @@
 - 主动判断使用什么技能，不需要干预
 - **核心：变得更强、更专业、真正有帮助**
 
-## 待完成
+## 2026-03-31 下午更新
+
+### 重大改进
+- Self-Repair v3: 重建，7个假修复清零，诚实原则（只报告真正修了的）
+- Evolver self_repair.js: 同样修复abort判断逻辑
+- Skills深化: system-resource-monitor/auto-monitor/feishu-evolver-wrapper 增强
+- skill-study.py: 自动化审计+改进系统建立
+
+### 持续进化体系
+- 每小时5分: .evolution-hourly.py 推送系统状态
+- 每天9点: .skill-study.py 技能学习+薄弱改进
+- 重大改进: .evolution-stage.py 立即推送飞书
+- Evolver后台: 持续循环运行中
+
+### Cron注册状态
+- self-repair.py: 每小时整点
+- evolution-hourly.py: 每小时5分
+- skill-study.py: 每天9点
+- proactive-planner.py: 每天9点
+
+### 待完成
 - SSH密码登录禁用（需用户提供公钥）
 - SSH端口改为非标准端口
 

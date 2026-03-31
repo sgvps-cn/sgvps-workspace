@@ -154,3 +154,12 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - rebase/merge_aborted: 只有真正处于rebase/merge状态才abort
 - Clash检测: pgrep路径匹配不上(相对路径./clash)，改为pgrep -a clash过滤./clash关键字
 - network_fail: api.openclaw.ai沙箱不可达，删除只留Clash API
+
+[LRN-20260331-009] 技能学习系统建立
+- 40个skills审计完成：39优质⭐3+ | 薄弱0
+- system-resource-monitor: 重写，2215字节，含阈值告警+健康判断+集成文档
+- auto-monitor: 完整重写，明确三角互补架构（self-repair/proactive-planner/auto-monitor）
+- feishu-evolver-wrapper: 补全所有文件说明+守护机制+lifecycle命令
+- code-review-fix: 自动改进SKILL.md为真实内容（原为模板）
+- skill-study.py: 每日9点cron，自动审计+薄弱改进+推送刘总
+- 修正audit：统计所有md文件行数（含引用md），避免误判php等分布式skill
