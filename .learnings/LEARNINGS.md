@@ -150,3 +150,7 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - 改进：只杀clash子进程，保留wrapper让其自动恢复
 - dedup阈值：>1个clash进程即清理（wrapper+clash=2正常）
 - 外网连通性检查在沙箱环境无意义，跳过api.openclaw.ai
+[LRN-20260331-008] Self-Repair假修复修复
+- rebase/merge_aborted: 只有真正处于rebase/merge状态才abort
+- Clash检测: pgrep路径匹配不上(相对路径./clash)，改为pgrep -a clash过滤./clash关键字
+- network_fail: api.openclaw.ai沙箱不可达，删除只留Clash API
