@@ -1,61 +1,128 @@
 #!/bin/bash
-# Clash主动选优 - 每5分钟自动选最优节点
-# 改进: 直接使用AUTO-全球的自动测速结果，不做人工干预
-# Clash的AUTO组自带url-test每5分钟测速，直接复用
+# Clash 主动选优监控 v2
+# 职责：
+#   1. 确保 GLOBAL 组指向 AUTO-全球（自动选优）
+#   2. 监控 AUTO 组状态和切换
+#   3. 记录测速历史
+#   4. 异常时推送飞书告警
+# Clash 的 url-test 每300s自动测速，此脚本负责监控和保障
+
 AUTH="123456:123456"
 HOST="http://127.0.0.1:9090"
 LOG="/root/.openclaw/workspace/memory/clash-auto-switch.log"
 STATE="/root/.openclaw/workspace/memory/clash-auto-switch-state.json"
+FEISHU="/root/.openclaw/workspace/.feishu-notify.py"
 
 log() { echo "[$(date '+%m-%d %H:%M')] $1" >> "$LOG"; }
 
-# 获取AUTO-全球当前选中的最优节点
-auto_global_data=$(curl -s --max-time 5 -u "$AUTH" \
-  "$HOST/proxies/%F0%9F%9A%80%20%F0%9F%94%A7%20AUTO-%E5%85%A8%E7%90%83" 2>/dev/null)
+send_feishu() {
+    python3 "$FEISHU" "$1" 2>/dev/null
+}
 
-now_node=$(echo "$auto_global_data" | python3 -c "
-import sys,json
-d=json.load(sys.stdin)
-print(d.get('now','?'))
-" 2>/dev/null)
+# ── 获取代理状态 ──────────────────────────────────────────
+get_proxy() {
+    local name="$1"
+    curl -s --max-time 5 -u "$AUTH" "$HOST/proxies/$(python3 -c "import urllib.parse; print(urllib.parse.quote(input()))" <<< "$name")" 2>/dev/null
+}
 
-if [ -z "$now_node" ] || [ "$now_node" = "?" ]; then
-    log "⚠️ 获取AUTO-全球状态失败"
+# ── 从 Clash API 获取所有关键组状态 ────────────────────────
+STATUS=$(curl -s --max-time 5 -u "$AUTH" "$HOST/proxies" 2>/dev/null)
+if [ -z "$STATUS" ]; then
+    log "⚠️ 连接Clash API失败"
+    send_feishu "⚠️ Clash API 无响应，可能已停止"
     exit 1
 fi
 
-# 获取该节点的延迟（history是list，取最后一项）
-delay=$(echo "$auto_global_data" | python3 -c "
+# GLOBAL 当前指向
+GLOBAL_NOW=$(echo "$STATUS" | python3 -c "
 import sys,json
 d=json.load(sys.stdin)
-h=d.get('history',[])
+g=d['proxies'].get('GLOBAL',{})
+print(g.get('now','?'))
+" 2>/dev/null)
+
+# AUTO-全球
+AUTO_NOW=$(echo "$STATUS" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+g=d['proxies'].get('🚀 AUTO-全球',{})
+print(g.get('now','?'))
+" 2>/dev/null)
+
+AUTO_DELAY=$(echo "$STATUS" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+g=d['proxies'].get('🚀 AUTO-全球',{})
+h=g.get('history',[])
 if h and isinstance(h,list) and len(h)>0:
     print(h[-1].get('delay','?'))
 else:
     print('?')
 " 2>/dev/null)
 
-# 读取上次节点
-last_node=$(python3 -c "
-import json,sys
-try:
-    with open('$STATE') as f:
-        d=json.load(f)
-    print(d.get('last_node','?'))
-except:
-    print('?')
+# AUTO-HK
+HK_NOW=$(echo "$STATUS" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+g=d['proxies'].get('🔧 AUTO-HK',{})
+print(g.get('now','?'))
 " 2>/dev/null)
 
-# 只有节点变化才记录
-if [ "$now_node" != "$last_node" ]; then
-    log "🔄 切换: $last_node → $now_node (${delay}ms)"
-    python3 -c "
-import json
-with open('$STATE','w') as f:
-    json.dump({'last_node':'$now_node','last_delay':'$delay','last_switch':'$(date +%Y-%m-%d\ %H:%M)'},f)
-" 2>/dev/null
-else
-    log "✅ $now_node (${delay}ms) [未变化]"
+# AUTO-JP
+JP_NOW=$(echo "$STATUS" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+g=d['proxies'].get('🔧 AUTO-JP',{})
+print(g.get('now','?'))
+" 2>/dev/null)
+
+# 连接数
+CONN_COUNT=$(echo "$STATUS" | python3 -c "
+import sys,json
+d=json.load(sys.stdin)
+print(len(d.get('connections',[])))
+" 2>/dev/null)
+
+log "GLOBAL=$GLOBAL_NOW | AUTO=$AUTO_NOW(${AUTO_DELAY}ms) | HK=$HK_NOW | JP=$JP_NOW"
+
+# ── 保障：GLOBAL 必须指向 AUTO-全球 ────────────────────────
+if [ "$GLOBAL_NOW" != "🚀 AUTO-全球" ]; then
+    log "⚠️ GLOBAL 异常($GLOBAL_NOW)，切换到 AUTO-全球"
+    send_feishu "⚠️ GLOBAL 被重置为 $GLOBAL_NOW，已自动恢复为 🚀 AUTO-全球"
+    curl -s --max-time 5 -u "$AUTH" -X PUT "$HOST/proxies/GLOBAL" \
+        -H "Content-Type: application/json" \
+        -d '{"name":"🚀 AUTO-全球"}' > /dev/null 2>&1
+    GLOBAL_NOW="🚀 AUTO-全球"
 fi
 
-echo "✅ $now_node (${delay}ms)"
+# ── 节点切换告警 ──────────────────────────────────────────
+LAST_NODE=$(python3 -c "
+import json
+try:
+    with open('$STATE') as f: d=json.load(f)
+    print(d.get('auto_node','?'))
+except: print('?')
+" 2>/dev/null)
+
+if [ "$AUTO_NOW" != "$LAST_NODE" ] && [ "$LAST_NODE" != "?" ]; then
+    log "🔄 AUTO切换: $LAST_NODE → $AUTO_NOW (${AUTO_DELAY}ms)"
+    send_feishu "🔄 节点切换: $LAST_NODE → $AUTO_NOW (${AUTO_DELAY}ms)"
+fi
+
+# ── 记录状态 ──────────────────────────────────────────────
+python3 -c "
+import json
+d={
+    'auto_node': '$AUTO_NOW',
+    'auto_delay': '$AUTO_DELAY',
+    'hk_node': '$HK_NOW',
+    'jp_node': '$JP_NOW',
+    'global': '$GLOBAL_NOW',
+    'connections': '$CONN_COUNT',
+    'updated': '$(date +%Y-%m-%d\ %H:%M)'
+}
+with open('$STATE','w') as f:
+    json.dump(d, f, ensure_ascii=False, indent=2)
+" 2>/dev/null
+
+echo "✅ $AUTO_NOW (${AUTO_DELAY}ms) | HK:$HK_NOW | JP:$JP_NOW"
