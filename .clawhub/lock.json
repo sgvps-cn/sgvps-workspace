@@ -188,6 +188,22 @@
     "soul-framework": {
       "version": "1.0.0",
       "installedAt": 1774950429138
+    },
+    "metacognition": {
+      "version": "1.1.2",
+      "installedAt": 1774951274396
+    },
+    "soulcraft": {
+      "version": "1.0.0",
+      "installedAt": 1774951278007
+    },
+    "consciousness-framework": {
+      "version": "1.0.0",
+      "installedAt": 1774951343452
+    },
+    "continuity": {
+      "version": "1.0.1",
+      "installedAt": 1774951476348
     }
   }
 }
