@@ -220,6 +220,10 @@
     "github": {
       "version": "1.0.0",
       "installedAt": 1774965814634
+    },
+    "1sec-security": {
+      "version": "0.4.15",
+      "installedAt": 1774966114866
     }
   }
 }
