@@ -232,6 +232,10 @@
     "ai-seo": {
       "version": "0.1.0",
       "installedAt": 1774967775668
+    },
+    "openclaw-cli": {
+      "version": "1.0.0",
+      "installedAt": 1774970635006
     }
   }
 }
