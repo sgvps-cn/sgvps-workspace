@@ -195,3 +195,11 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - 修复：O_EXCL时间戳文件名（watchdog.minute.YYYYMMDDHHMM）保证同分钟原子性
 - 修复：urllib替代curl subprocess（避免fork导致的grandchild进程）
 - 验证：连续多分钟cron测试，每分钟只有1条日志 ✅
+[LRN-20260331-017] feishu-notify.py cron下curl无PATH
+- 症状：FAIL: token，所有cron调用的飞书通知都失败
+- 根因：cron环境PATH受限，curl不在默认路径
+- 修复：subprocess.run(["/usr/bin/curl", ...]) 绝对路径
+[LRN-20260331-018] self-review.sh grep过滤误杀clash
+- 症状：Clash PID显示为空
+- 根因：grep -v sh 过滤了./clash（含sh字符）
+- 修复：grep -v 'sh -c' 精确匹配shell包装进程
