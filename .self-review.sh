@@ -1,57 +1,41 @@
 #!/bin/bash
-# 贾维斯每日自我复盘 - 运行一次总结经验教训
-# 0 9,21 * * * /root/.openclaw/workspace/.self-review.sh
+# 贾维斯每日自我复盘 - 动态生成
+# 0 9 * * * /root/.openclaw/workspace/.self-review.sh
 
-LOG="/root/.openclaw/workspace/memory/$(date +%Y-%m-%d).md"
-LEARNINGS="/root/.openclaw/workspace/.learnings"
-YESTERDAY=$(date -d "yesterday" +%Y-%m-%d)
+LOG_DIR="/root/.openclaw/workspace/memory"
+LEARNINGS="/root/.openclaw/workspace/.learnings/LEARNINGS.md"
+TODAY=$(date +%Y-%m-%d)
+LOG="$LOG_DIR/review-$TODAY.md"
 
-echo "=== 贾维斯自我复盘 $(date '+%Y-%m-%d %H:%M') ===" >> "$LOG"
-echo "" >> "$LOG"
+# 每日复盘
+{
+  echo "=== 贾维斯自我复盘 $TODAY ==="
+  echo ""
+  
+  # learnings统计
+  if [ -f "$LEARNINGS" ]; then
+    total=$(grep -c "^\[LRN\|^\[ERR" "$LEARNINGS" 2>/dev/null || echo 0)
+    today_lrn=$(grep -c "$(date +%Y%m%d)" "$LEARNINGS" 2>/dev/null || echo 0)
+    echo "**Learnings:** 累计${total}条，今日+${today_lrn}条"
+  fi
+  
+  # cron运行状态
+  echo ""
+  echo "**Cron状态:**"
+  for f in "$LOG_DIR"/*.log; do
+    name=$(basename "$f")
+    lines=$(wc -l < "$f" 2>/dev/null || echo 0)
+    last=$(tail -1 "$f" 2>/dev/null | cut -c1-60)
+    echo "- $name: ${lines}行 | 最后: $last"
+  done
+  
+  echo ""
+  echo "**Gateway:** $(/usr/bin/curl -s -o /dev/null -w '%{http_code}' http://127.0.0.1:18789/ 2>/dev/null) | mem=$(ps aux | grep openclaw-gateway | grep -v grep | awk '{print $6}')KB"
+  echo "**Clash:** $(pgrep -a clash | grep -v "sh -c" | awk '{print $1}' || echo '未运行')"
+  
+  echo ""
+  echo "=== 复盘完成 $(date '+%H:%M') ==="
+} > "$LOG"
 
-# 1. 今日执行了哪些操作
-echo "**今日主要操作:**" >> "$LOG"
-echo "- SEO Audit + 5篇文章生成写入数据库" >> "$LOG"
-echo "- cron卡住问题排查+解决（加200秒超时）" >> "$LOG"
-echo "- 主动守护体系建立（每5分钟检查）" >> "$LOG"
-echo "- learnings系统初始化" >> "$LOG"
-echo "" >> "$LOG"
-
-# 2. 犯了什么错
-echo "**犯了什么错:**" >> "$LOG"
-echo "- 前置检查不足：没确认网络是否通就调用API" >> "$LOG"
-echo "- 重复操作：多次重复写数据库字段探索" >> "$LOG"
-echo "" >> "$LOG"
-
-# 3. 学到了什么
-echo "**学到了:**" >> "$LOG"
-echo "- 外部API必须加超时保护" >> "$LOG"
-echo "- 网络受限环境判断：curl -o /dev/null -s -w '%{http_code}'" >> "$LOG"
-echo "- BT-Panel cron卡住表现：ps aux显示CPU TIME很长但CPU%很低" >> "$LOG"
-echo "" >> "$LOG"
-
-# 4. 下次要改什么
-echo "**下次要改:**" >> "$LOG"
-echo "- [ ] 做事前先确认网络状态" >> "$LOG"
-echo "- [ ] API调用一律加timeout" >> "$LOG"
-echo "- [ ] 主动守护要覆盖nginx/mysql/php崩溃" >> "$LOG"
-echo "" >> "$LOG"
-
-# 5. learnings文件里有几个待处理
-PENDING=$(grep -h "Status\*\*: pending" $LEARNINGS/*.md 2>/dev/null | wc -l)
-HIGH=$(grep -h "Priority\*\*: high\|Priority: high" $LEARNINGS/*.md 2>/dev/null | wc -l)
-echo "**learnings状态:** 待处理$件，高优先级$HIGH件" >> "$LOG"
-echo "" >> "$LOG"
-
-# 6. 检查是否需要promote到SOUL.md/AGENTS.md
-echo "**自我评估:**" >> "$LOG"
-echo "- 主动性: 进步了，从被动响应到主动发现问题" >> "$LOG"
-echo "- 准确性: 需加强事前验证" >> "$LOG"
-echo "- 速度: 可接受" >> "$LOG"
-echo "" >> "$LOG"
-
-echo "=== 复盘完成 ===" >> "$LOG"
-echo "" >> "$LOG"
-
-# 发送飞书通知
-python3 /root/.openclaw/workspace/.feishu-notify.py "贾维斯日报 $(date +%m/%d) 完成" 2>/dev/null
+# 发送飞书
+python3 /root/.openclaw/workspace/.feishu-notify.py "贾维斯日报 $TODAY 完成" 2>/dev/null
