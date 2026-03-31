@@ -595,3 +595,16 @@ NameError: name 'MEMDIR' is not defined
 [03-31 21:33] Gateway: PID=473058 mem=477MB HTTP=200 time=3ms
 [03-31 21:34] Gateway: PID=473058 mem=478MB HTTP=200 time=5ms
 [03-31 21:35] Gateway: PID=473058 mem=482MB HTTP=200 time=5ms
+[03-31 21:36] Gateway: PID=473058 mem=482MB HTTP=200 time=5ms
+[03-31 21:37] Gateway: PID=473058 mem=482MB HTTP=200 time=4ms
+[03-31 21:38] Gateway: PID=473058 mem=482MB HTTP=200 time=4ms
+[03-31 21:39] Gateway: PID=473058 mem=483MB HTTP=200 time=5ms
+[03-31 21:40] Gateway: PID=473058 mem=483MB HTTP=200 time=4ms
+[03-31 21:41] Gateway: PID=473058 mem=484MB HTTP=200 time=4ms
+[03-31 21:42] Gateway: PID=473058 mem=485MB HTTP=200 time=5ms
+[03-31 21:43] Gateway: PID=473058 mem=485MB HTTP=200 time=4ms
+[03-31 21:44] Gateway: PID=473058 mem=485MB HTTP=200 time=4ms
+[03-31 21:45] Gateway: PID=473058 mem=485MB HTTP=200 time=4ms
+[03-31 21:46] Gateway: PID=473058 mem=487MB HTTP=200 time=5ms
+[03-31 21:47] Gateway: PID=473058 mem=491MB HTTP=200 time=4ms
+[03-31 21:48] Gateway: PID=473058 mem=484MB HTTP=200 time=4ms
