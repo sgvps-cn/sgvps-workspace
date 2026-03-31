@@ -224,6 +224,14 @@
     "1sec-security": {
       "version": "0.4.15",
       "installedAt": 1774966114866
+    },
+    "ontology": {
+      "version": "1.0.4",
+      "installedAt": 1774967761718
+    },
+    "ai-seo": {
+      "version": "0.1.0",
+      "installedAt": 1774967775668
     }
   }
 }
