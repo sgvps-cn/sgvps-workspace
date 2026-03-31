@@ -163,3 +163,8 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - code-review-fix: 自动改进SKILL.md为真实内容（原为模板）
 - skill-study.py: 每日9点cron，自动审计+薄弱改进+推送刘总
 - 修正audit：统计所有md文件行数（含引用md），避免误判php等分布式skill
+[LRN-20260331-010] ClawHub已登录: @sgvps-cn
+[ERR-20260331-005] OpenClaw edit通知格式bug
+- 现象: edit成功但飞书显示'Edit failed'
+- 原因: 路径含~和[]被飞书markdown链接格式解析失败
+- 状态: OpenClaw内部bug，无法在workspace层修复

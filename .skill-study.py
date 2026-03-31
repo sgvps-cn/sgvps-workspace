@@ -162,6 +162,25 @@ def main():
     weak_count = len(weak)
 
     state = get_state()
+    # 连续学习天数追踪
+    today = datetime.now().strftime('%Y-%m-%d')
+    last_study = state.get("last_study_date", "")
+    streak = state.get("study_streak", 0)
+    if last_study == today:
+        pass  # 今日已学习
+    elif last_study == "":
+        streak = 1
+    else:
+        from datetime import timedelta
+        try:
+            last_dt = datetime.strptime(last_study, '%Y-%m-%d')
+            today_dt = datetime.strptime(today, '%Y-%m-%d')
+            gap = (today_dt - last_dt).days
+            streak = streak + 1 if gap == 1 else 1
+        except:
+            streak = 1
+    state["last_study_date"] = today
+    state["study_streak"] = streak
     state["last_audit"] = datetime.now().isoformat()
     state["total_skills"] = total
     state["strong_skills"] = strong
@@ -172,6 +191,7 @@ def main():
         f"## 🛠️ 贾维斯技能学习报告",
         f"",
         f"**审计时间:** {datetime.now().strftime('%Y-%m-%d %H:%M')}",
+        f"**连续学习:** 🔥 {streak} 天",
         f"**技能总览:** {total}个 | 优质:{strong}⭐ | 薄弱:{weak_count}",
         f"",
     ]

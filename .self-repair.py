@@ -206,17 +206,29 @@ def repair_network():
 
 # ─── Self-Repair Cron ───────────────────────────────────────────
 def repair_self_cron():
+    """检查并确保所有关键cron job存在，防止技能学习/进化系统被中断"""
     repaired = []
-    ok, out, _ = cmd("crontab -l 2>/dev/null | grep self-repair")
-    if not ok or not out:
-        cron_cmd = "0 * * * * python3 /root/.openclaw/workspace/.self-repair.py >> /root/.openclaw/workspace/memory/self-repair.log 2>&1\n"
-        ok2, existing, _ = cmd("crontab -l 2>/dev/null")
-        new_ct = (existing + "\n" + cron_cmd) if ok2 else cron_cmd
+    # 全部关键cron jobs
+    CRON_JOBS = [
+        ("self-repair", "0 * * * * python3 /root/.openclaw/workspace/.self-repair.py >> /root/.openclaw/workspace/memory/self-repair.log 2>&1"),
+        ("evolution-hourly", "5 * * * * python3 /root/.openclaw/workspace/.evolution-hourly.py >> /root/.openclaw/workspace/memory/evolution-report.log 2>&1"),
+        ("skill-study", "0 9 * * * python3 /root/.openclaw/workspace/.skill-study.py >> /root/.openclaw/workspace/memory/skill-study.log 2>&1"),
+        ("proactive-planner", "0 9 * * * python3 /root/.openclaw/workspace/.proactive-planner.py >> /root/.openclaw/workspace/memory/proactive-planner.log 2>&1"),
+    ]
+    ok, current, _ = cmd("crontab -l 2>/dev/null")
+    current_ct = current + "\n" if ok else ""
+    reregistered = []
+    for name, cron_line in CRON_JOBS:
+        if not (ok and name in current):
+            if cron_line not in current_ct:
+                current_ct += cron_line + "\n"
+                reregistered.append(name)
+    if reregistered:
         try:
-            p = subprocess.run("crontab -", shell=True, input=new_ct, capture_output=True, text=True, timeout=5)
+            p = subprocess.run("crontab -", shell=True, input=current_ct, capture_output=True, text=True, timeout=5)
             if p.returncode == 0:
-                repaired.append("cron_reregistered")
-                log("  ⚠️ Self-Repair Cron丢失，已重新注册")
+                repaired.append(f"cron_reregistered:{','.join(reregistered)}")
+                log(f"  ⚠️ Cron丢失已补: {', '.join(reregistered)}")
         except: pass
     return repaired
 
