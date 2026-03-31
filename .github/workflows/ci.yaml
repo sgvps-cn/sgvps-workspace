@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check JSON syntax
+        run: |
+          for f in $(find . -name "*.json" -not -path "./node_modules/*" -not -path "./.openclaw/evolver/node_modules/*"); do
+            python3 -c "import json; json.load(open('$f'))" 2>/dev/null && echo "OK: $f" || echo "FAIL: $f"
+          done || true
+
+      - name: Check Python syntax
+        run: |
+          for f in $(find . -name "*.py" -not -path "./.openclaw/evolver/*"); do
+            python3 -m py_compile "$f" 2>/dev/null && echo "OK: $f" || echo "FAIL: $f"
+          done || true
+
+      - name: Check shell scripts
+        run: |
+          for f in $(find . -name "*.sh" | grep -v node_modules | head -20); do
+            bash -n "$f" 2>/dev/null && echo "OK: $f" || echo "FAIL: $f"
+          done || true

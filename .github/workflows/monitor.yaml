@@ -1,0 +1,34 @@
+name: VPS Monitor
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"
+  workflow_dispatch:
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check sgvps.cn
+        run: |
+          HTTP_CODE=$(curl -s -o /dev/null -w "%{http_code}" --connect-timeout 10 https://sgvps.cn/ 2>/dev/null || echo "000")
+          echo "HTTP Status: $HTTP_CODE"
+          if [ "$HTTP_CODE" = "200" ] || [ "$HTTP_CODE" = "301" ] || [ "$HTTP_CODE" = "302" ]; then
+            echo "VPS is UP"
+          else
+            echo "VPS is DOWN"
+            echo "::set-output name=status::DOWN"
+          fi
+        id: health
+
+      - name: Create alert issue if down
+        if: steps.health.outputs.status == 'DOWN'
+        run: |
+          curl -s -X POST "https://api.github.com/repos/sgvps-cn/sgvps-workspace/issues" \
+            -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "title": "⚠️ VPS Alert - sgvps.cn down",
+              "body": "VPS health check failed (HTTP '$(date +%H:%M:%S)'). Check server immediately.",
+              "labels": ["alert"]
+            }'
