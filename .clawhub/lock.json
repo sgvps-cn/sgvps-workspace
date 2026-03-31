@@ -204,6 +204,10 @@
     "continuity": {
       "version": "1.0.1",
       "installedAt": 1774951476348
+    },
+    "capability-evolver-pro": {
+      "version": "1.0.2",
+      "installedAt": 1774959241202
     }
   }
 }

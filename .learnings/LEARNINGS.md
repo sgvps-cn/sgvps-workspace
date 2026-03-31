@@ -203,3 +203,11 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - 症状：Clash PID显示为空
 - 根因：grep -v sh 过滤了./clash（含sh字符）
 - 修复：grep -v 'sh -c' 精确匹配shell包装进程
+[LRN-20260331-019] recursive-self-improvement skill 深度学习
+- 核心：REPAIRING(修复) + OPTIMIZING(优化) 双模式递归
+- 修复触发：检测到错误/异常/日志老化/进程丢失
+- 优化触发：3轮STABLE后自动进入优化模式
+- 能力：并发任务池/自动化测试/性能监控/错误预测/异常恢复
+[LRN-20260331-020] ai-web-automation skill
+- 能力：表单填写/数据抓取/定时任务/自动化测试/API测试/网站监控
+- OpenClaw命令：openclaw run web-automation --action [scrape|cron|test]
