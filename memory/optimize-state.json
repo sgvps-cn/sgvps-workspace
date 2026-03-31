@@ -1,4 +1,4 @@
 {
-  "mode": "STABLE",
-  "stable_rounds": 2
+  "mode": "OPTIMIZING",
+  "stable_rounds": 0
 }
