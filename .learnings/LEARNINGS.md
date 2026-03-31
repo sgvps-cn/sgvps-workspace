@@ -188,3 +188,10 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 [LRN-20260331-015] SSH密码登录已禁用(实测确认)
 - PasswordAuthentication no, PubkeyAuthentication yes (实测)
 - MEMORY.md SSH信息已更新
+[LRN-20260331-016] cron双触发bug彻底修复
+- 症状：看门狗每分钟触发两次（cron触发一次但日志两条）
+- 根因1：os.fork()后父子进程都执行main()（subprocess.run fork内部机制）
+- 根因2：flock在父子进程间不work（文件锁在fork后各自独立）
+- 修复：O_EXCL时间戳文件名（watchdog.minute.YYYYMMDDHHMM）保证同分钟原子性
+- 修复：urllib替代curl subprocess（避免fork导致的grandchild进程）
+- 验证：连续多分钟cron测试，每分钟只有1条日志 ✅
