@@ -271,17 +271,28 @@ def repair_self_cron():
 # ─── Evolver ────────────────────────────────────────────────────
 def repair_evolver():
     repaired = []
+    # 1. 检查 systemd 服务状态
+    ok, out, _ = cmd("systemctl is-active evolver-loop 2>&1")
+    if not ok or "active" not in out:
+        log(f"  ⚠️ Evolver服务未运行({out})，重启")
+        cmd("systemctl restart evolver-loop", timeout=15)
+        time.sleep(jitter_backoff(0, base=2, max_delay=8))
+        ok2, out2, _ = cmd("systemctl is-active evolver-loop 2>&1")
+        if ok2 and "active" in out2:
+            repaired.append("evolver_restart_ok")
+        else:
+            repaired.append("evolver_restart_failed")
+    # 2. 健康检查(可选)
     ed = "/root/.openclaw/evolver"
-    if not os.path.exists(ed):
-        return repaired
-    ok, out, _ = cmd(f"cd {ed} && node -e \"const h=require('./src/ops/health_check');const r=h.runHealthCheck();console.log(JSON.stringify(r))\"")
-    if ok:
-        try:
-            r = json.loads(out)
-            if r.get('status') == 'error':
-                log(f"  ⚠️ Evolver健康检查异常")
-                repaired.append("evolver_health_error")
-        except: pass
+    if os.path.exists(ed):
+        ok, out, _ = cmd(f"cd {ed} && node -e \"const h=require('./src/ops/health_check');const r=h.runHealthCheck();console.log(JSON.stringify(r))\"")
+        if ok:
+            try:
+                r = json.loads(out)
+                if r.get('status') == 'error':
+                    log(f"  ⚠️ Evolver健康检查异常")
+                    repaired.append("evolver_health_error")
+            except: pass
     return repaired
 
 # ─── 磁盘 ───────────────────────────────────────────────────────
