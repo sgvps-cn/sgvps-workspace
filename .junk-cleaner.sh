@@ -13,11 +13,11 @@ echo "=== 清理开始 $(date '+%Y-%m-%d %H:%M') ==="
 TOTAL_FREED=0
 REPORT=""
 
-# 1. 清理旧的watchdog minute文件（只保留最新10个）
+# 1. 清理旧的watchdog minute文件（只保留最新50个，约1小时内）
 minute_files=$(find $MEMDIR -name "watchdog.minute.2*" | wc -l)
-if [ "$minute_files" -gt 10 ]; then
-  removed=$(find $MEMDIR -name "watchdog.minute.2*" | sort | head -n -10 | wc -l)
-  find $MEMDIR -name "watchdog.minute.2*" | sort | head -n -10 | xargs -r rm -f
+if [ "$minute_files" -gt 50 ]; then
+  removed=$(find $MEMDIR -name "watchdog.minute.2*" | sort | head -n -50 | wc -l)
+  find $MEMDIR -name "watchdog.minute.2*" | sort | head -n -50 | xargs -r rm -f
   echo "🗑️ watchdog minute文件: 清理${removed}个旧文件"
   REPORT="${REPORT}watchdog minute: ${removed}个 | "
 fi
