@@ -11,7 +11,7 @@ echo "[$(date '+%Y-%m-%d %H:%M')] === SEO文章生成开始 ===" >> "$LOG"
 $PYTHON << 'PYEOF' 2>&1 | tee -a "$LOG"
 import subprocess, json, re, sys
 
-GLM_KEY = "45dc8c3daf834606ad863f7d8711fb1e.0oH7HauaYa7K5kDH"
+GLM_KEY = "YOUR_GLM_KEY_HERE"
 PROXY = "http://127.0.0.1:7890"
 API_HOST = "https://open.bigmodel.cn/api/paas/v4/chat/completions"
 DB = {"host":"127.0.0.1","user":"www_sgvps_cn","pass":"p6dd5z992Bpc8CQR","name":"www_sgvps_cn"}
