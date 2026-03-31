@@ -168,6 +168,26 @@
     "webhook": {
       "version": "1.0.0",
       "installedAt": 1774949968997
+    },
+    "promitheus": {
+      "version": "1.0.3",
+      "installedAt": 1774950385977
+    },
+    "agent-autonomy-kit": {
+      "version": "1.0.0",
+      "installedAt": 1774950389246
+    },
+    "agent-ethos": {
+      "version": "1.0.0",
+      "installedAt": 1774950423432
+    },
+    "agent-autonomy": {
+      "version": "1.0.0",
+      "installedAt": 1774950426178
+    },
+    "soul-framework": {
+      "version": "1.0.0",
+      "installedAt": 1774950429138
     }
   }
 }

@@ -212,6 +212,7 @@ def repair_self_cron():
     CRON_JOBS = [
         ("self-repair", "0 * * * * python3 /root/.openclaw/workspace/.self-repair.py >> /root/.openclaw/workspace/memory/self-repair.log 2>&1"),
         ("evolution-hourly", "5 * * * * python3 /root/.openclaw/workspace/.evolution-hourly.py >> /root/.openclaw/workspace/memory/evolution-report.log 2>&1"),
+        ("gateway-watchdog", "* * * * * python3 /root/.openclaw/workspace/.gateway-watchdog.py >> /root/.openclaw/workspace/memory/watchdog.log 2>&1"),
         ("skill-study", "0 9 * * * python3 /root/.openclaw/workspace/.skill-study.py >> /root/.openclaw/workspace/memory/skill-study.log 2>&1"),
         ("proactive-planner", "0 9 * * * python3 /root/.openclaw/workspace/.proactive-planner.py >> /root/.openclaw/workspace/memory/proactive-planner.log 2>&1"),
     ]
