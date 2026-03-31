@@ -573,3 +573,24 @@ Evolver PID 386351: 存活
 [03-31 21:23] Gateway: PID=473058 mem=440MB HTTP=200 time=4ms
 [03-31 21:24] Gateway: PID=473058 mem=473MB HTTP=200 time=4ms
 [03-31 21:25] Gateway: PID=473058 mem=473MB HTTP=200 time=4ms
+[03-31 21:26] Gateway: PID=473058 mem=478MB HTTP=200 time=4ms
+[03-31 21:27] Gateway: PID=473058 mem=483MB HTTP=200 time=5ms
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/.gateway-watchdog.py", line 185, in <module>
+    check_evolver()
+  File "/root/.openclaw/workspace/.gateway-watchdog.py", line 173, in check_evolver
+    log_file = f"{MEMDIR}/evolver-loop.log"
+NameError: name 'MEMDIR' is not defined
+[03-31 21:28] Gateway: PID=473058 mem=475MB HTTP=200 time=5ms
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/.gateway-watchdog.py", line 185, in <module>
+    check_evolver()
+  File "/root/.openclaw/workspace/.gateway-watchdog.py", line 173, in check_evolver
+    log_file = f"{MEMDIR}/evolver-loop.log"
+NameError: name 'MEMDIR' is not defined
+[03-31 21:29] Gateway: PID=473058 mem=472MB HTTP=200 time=4ms
+[03-31 21:30] Gateway: PID=473058 mem=477MB HTTP=200 time=4ms
+[03-31 21:31] Gateway: PID=473058 mem=472MB HTTP=200 time=4ms
+[03-31 21:32] Gateway: PID=473058 mem=475MB HTTP=200 time=4ms
+[03-31 21:33] Gateway: PID=473058 mem=477MB HTTP=200 time=3ms
+[03-31 21:34] Gateway: PID=473058 mem=478MB HTTP=200 time=5ms

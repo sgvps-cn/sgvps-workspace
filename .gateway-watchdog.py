@@ -167,3 +167,20 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+# ─── Evolver 守护（如果没有在N分钟内有日志则重启） ───────────────────────
+def check_evolver():
+    memdir = "/root/.openclaw/workspace/memory"
+    log_file = f"{memdir}/evolver-loop.log"
+    if not os.path.exists(log_file):
+        return
+    mtime = datetime.fromtimestamp(os.path.getmtime(log_file))
+    age = (datetime.now() - mtime).total_seconds()
+    if age > 1800:  # 30分钟无日志，重启
+        log(f"[EVOLVER] ⚠️ 无日志{datetime.now().strftime('%H:%M')}，重启")
+        os.system("kill $(pgrep -f 'evolver/index.js') 2>/dev/null; "
+                  "nohup node /root/.openclaw/evolver/index.js --loop >> "
+                  f"{memdir}/evolver-loop.log 2>&1 &")
+        os.system(f"touch {log_file}")
+
+check_evolver()
