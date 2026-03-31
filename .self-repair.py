@@ -131,24 +131,35 @@ def repair_procs():
         log("  ⚠️ jarvis-daemon未运行，重启")
         cmd("systemctl restart jarvis-daemon", timeout=10)
         repaired.append("daemon_restart")
-    # Clash - 只在真正未运行时报告
+    # Clash - 检查进程 + 端口连通性（进程在≠端口通）
     _, out, _ = cmd("pgrep -a clash 2>/dev/null")
     lines = [l for l in out.strip().split("\n") if l and "./clash" in l]
     clash_pids = [l.split()[0] for l in lines]
-    if not clash_pids:
-        _, wrapper_out, _ = cmd("ps aux | grep 'nohup.*clash -d' | grep -v grep | awk '{print $2}'")
-        wrapper_pids = [p for p in wrapper_out.strip().split("\n") if p]
-        if wrapper_pids:
-            time.sleep(jitter_backoff(0, base=1, max_delay=8))
-            _, out2, _ = cmd("pgrep -a clash 2>/dev/null")
-            lines2 = [l for l in out2.strip().split("\n") if l and "./clash" in l]
-            if not lines2:
-                cmd("cd /root/clash && nohup ./clash -d . > /tmp/clash.log 2>&1 &", timeout=5)
-                repaired.append("clash_restart")
+
+    # 检查端口是否真正可连（不只是进程在跑）
+    clash_port_ok = False
+    if clash_pids:
+        port_ok, port_out, _ = cmd("curl -s -o /dev/null -w '%{http_code}' --connect-timeout 3 -x http://127.0.0.1:7891 https://www.google.com 2>/dev/null")
+        clash_port_ok = (port_ok and port_out == "200")
+
+    if not clash_pids or not clash_port_ok:
+        # 进程挂了 或 进程在但端口不通 → 重启
+        if not clash_pids:
+            log("  ⚠️ Clash进程未运行，重启")
         else:
-            cmd("cd /root/clash && nohup ./clash -d . > /tmp/clash.log 2>&1 &", timeout=5)
-            repaired.append("clash_restart")
+            log("  ⚠️ Clash进程在但端口7891不通，重启")
+        cmd("pkill -9 clash 2>/dev/null; sleep 1")
+        time.sleep(jitter_backoff(0, base=0.5, max_delay=4))
+        cmd("cd /root/clash && nohup ./clash -d . > /tmp/clash.log 2>&1 &", timeout=5)
+        time.sleep(jitter_backoff(0, base=1, max_delay=4))
+        # 验证重启后端口通了
+        port_ok2, port_out2, _ = cmd("curl -s -o /dev/null -w '%{http_code}' --connect-timeout 3 -x http://127.0.0.1:7891 https://www.google.com 2>/dev/null")
+        if port_ok2 and port_out2 == "200":
+            repaired.append("clash_restart_ok")
+        else:
+            repaired.append("clash_restart_failed")
     elif len(clash_pids) > 1:
+        # 多进程 → 杀多余
         for pid in clash_pids[:-1]:
             cmd(f"kill -9 {pid} 2>/dev/null")
         repaired.append(f"clash_dedup({len(clash_pids)-1})")
