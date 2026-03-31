@@ -52,3 +52,6 @@ echo "" >> "$LOG"
 
 echo "=== 复盘完成 ===" >> "$LOG"
 echo "" >> "$LOG"
+
+# 发送飞书通知
+python3 /root/.openclaw/workspace/.feishu-notify.py "贾维斯日报 $(date +%m/%d) 完成" 2>/dev/null
