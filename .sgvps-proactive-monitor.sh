@@ -41,13 +41,20 @@ if [ "$STUCK" -gt 3 ]; then
 fi
 
 # 3. 进程崩溃检查
-for proc in mysql nginx php-fpm; do
+for proc in mysql nginx; do
     if ! systemctl is-active $proc > /dev/null 2>&1; then
         echo "[$NOW] ⚠️ $proc停机 - 重启中" >> "$LOG"
         echo "[$NOW] ⚠️ $proc停机 - 重启中" >> "$ALERT_LOG"
         systemctl restart $proc 2>/dev/null
     fi
 done
+
+# php-fpm: 没有 systemd 服务，用进程检测
+if ! pgrep -f "php-fpm" > /dev/null 2>&1; then
+    echo "[$NOW] ⚠️ php-fpm停机 - 重启中" >> "$LOG"
+    echo "[$NOW] ⚠️ php-fpm停机 - 重启中" >> "$ALERT_LOG"
+    /etc/init.d/php-fpm-72 restart 2>/dev/null || /www/server/php/72/sbin/php-fpm 2>/dev/null &
+fi
 
 # 4. 磁盘告警
 USAGE=$(df / | tail -1 | awk '{print $5}' | sed 's/%//')
