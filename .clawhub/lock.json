@@ -156,6 +156,18 @@
     "self-improving": {
       "version": "1.2.16",
       "installedAt": 1774908124624
+    },
+    "para-second-brain": {
+      "version": "2.0.1",
+      "installedAt": 1774949854387
+    },
+    "api-gateway": {
+      "version": "1.0.73",
+      "installedAt": 1774949965400
+    },
+    "webhook": {
+      "version": "1.0.0",
+      "installedAt": 1774949968997
     }
   }
 }
