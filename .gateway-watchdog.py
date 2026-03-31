@@ -34,15 +34,17 @@ if not am_i_the_runner():
 with open(PID_FILE, "w") as f:
     f.write(str(os.getpid()))
 
-# 分钟级防重复：原子性读+写+O_EXCL防止竞态
+# 分钟级防重复：用时间戳文件名，同分钟内只运行一次
 this_minute = datetime.now().strftime("%Y%m%d%H%M")
+MINUTE_FILE_TS = f"{MINUTE_FILE}.{this_minute}"
 try:
-    # O_CREAT|O_EXCL = 文件存在则失败，保证原子性
-    fd = os.open(MINUTE_FILE, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0o644)
-    os.write(fd, this_minute.encode())
+    fd = os.open(MINUTE_FILE_TS, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0o644)
     os.close(fd)
+    # 写入当前PID，方便调试
+    with open(MINUTE_FILE, "w") as f:
+        f.write(this_minute)
 except FileExistsError:
-    sys.exit(0)  # 文件已存在（上一个进程已创建），退出
+    sys.exit(0)  # 同分钟已运行，退出
 
 # ─── 日志 ───────────────────────────────────────────────────
 def log(msg):

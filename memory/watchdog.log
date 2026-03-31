@@ -457,3 +457,5 @@ Evolver PID 386351: 存活
 [03-31 18:45] Gateway: PID=473058 mem=419MB HTTP=200 time=4ms
 [03-31 18:49] [CHECK] PID=479244
 [03-31 18:49] Gateway: PID=473058 mem=414MB HTTP=200 time=5ms
+[03-31 18:50] Gateway: PID=473058 mem=415MB HTTP=200 time=5ms
+[03-31 18:51] Gateway: PID=473058 mem=418MB HTTP=200 time=4ms
