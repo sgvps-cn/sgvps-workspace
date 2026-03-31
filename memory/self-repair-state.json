@@ -1,7 +1,8 @@
 {
-  "last_repair": "2026-03-31T08:31:54.532687",
+  "last_repair": "2026-03-31T09:31:59.537365",
   "last_fixed": [
     "rebase_aborted",
-    "merge_aborted"
+    "merge_aborted",
+    "clash_restart"
   ]
 }
