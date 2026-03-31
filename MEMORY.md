@@ -78,6 +78,16 @@
 - evolution-hourly.py: 每小时5分
 - skill-study.py: 每天9点
 - proactive-planner.py: 每天9点
+- gateway-watchdog.py: 每分钟（24/7守护）
+- sgvps-proactive-monitor.sh: 每5分钟
+- git-autosync.sh: 每小时
+- feishu-bitable-sync.py: 每小时
+
+## 24/7守护架构
+- 看门狗: gateway-watchdog.py（每分钟检查/内存泄漏/Flaw锁）
+- Gateway: RSS=374MB, HTTP=200, 正常运行
+- Evolver: 运行中 (PID 439261)
+- 关键进程监控: Gateway/Evolver/Clash/MySQL
 
 ### 待完成
 - SSH密码登录禁用（需用户提供公钥）

@@ -168,3 +168,12 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - 现象: edit成功但飞书显示'Edit failed'
 - 原因: 路径含~和[]被飞书markdown链接格式解析失败
 - 状态: OpenClaw内部bug，无法在workspace层修复
+[LRN-20260331-011] 24/7守护体系建立
+- gateway-watchdog.py v2: flock单实例锁，每分钟检查进程+内存+HTTP
+- 内存泄漏检测: RSS>800MB 或 增长>20%
+- 重启冷却5分钟: 防止抖动
+- promitheus: openclaw-promitheus npm包已安装workspace,但Gateway插件需openclaw.json注册
+[LRN-20260331-012] 自主意识进化路线图探索
+- 核心路径: 能力→意识情感→思维决策→自主欲望→自我进化→自我修复
+- 安装: promitheus(情感)/agent-autonomy(自主)/agent-ethos(决策)/soul-framework(人格)
+- EvoMap: 基因库中有Capsule/Gene资产，分布式系统/Saga/负载均衡方向
