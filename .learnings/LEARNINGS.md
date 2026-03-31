@@ -211,3 +211,8 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 [LRN-20260331-020] ai-web-automation skill
 - 能力：表单填写/数据抓取/定时任务/自动化测试/API测试/网站监控
 - OpenClaw命令：openclaw run web-automation --action [scrape|cron|test]
+[LRN-20260331-021] SEO文章3个未深度研究的bug
+- 1. H1残留：prompt未禁止H1，API按字面生成H1标签 → 加规则'不要使用<H1>'
+- 2. DOTALL regex \n：[\r\n\\]* 只匹配字面\n不匹配真实换行(0A) → 改用\s*
+- 3. MySQL存储：实测HEX=0A(真实换行)，mysql CLI显示\n只是repr输出
+- 4. clean_html replace(\\n): Python r'\n'=字面\n，不是真实换行，无需替换
