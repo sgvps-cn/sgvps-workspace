@@ -1,36 +1,63 @@
 #!/usr/bin/env python3
 """
-贾维斯24/7看门狗 - Jarvis 24/7 Watchdog v2
-每分钟运行，用flock确保单实例，检测Gateway卡死/内存泄漏/崩溃
+贾维斯24/7看门狗 - Jarvis 24/7 Watchdog v4
+每分钟运行，检测Gateway卡死/内存泄漏/崩溃
+PID文件 + flock 双保护，os.fork() 安全
 """
-import os, sys, json, subprocess, time, fcntl
+import os, sys, json, subprocess, time, fcntl, urllib.request, urllib.error
 from datetime import datetime
 
 LOCK_FILE = "/root/.openclaw/workspace/memory/watchdog.lock"
-PID_FILE = "/root/.openclaw/workspace/memory/watchdog.pid"
 STATE_FILE = "/root/.openclaw/workspace/memory/watchdog-state.json"
 LOG = "/root/.openclaw/workspace/memory/watchdog.log"
+PID_FILE = "/root/.openclaw/workspace/memory/watchdog.pid"
+MINUTE_FILE = "/root/.openclaw/workspace/memory/watchdog.minute"
 MAX_MEM_MB = 800
 
+# ─── 单实例：PID文件 + flock ────────────────────────────────
+def am_i_the_runner():
+    """PID文件保护：检查自己是否是最新启动的实例"""
+    try:
+        with open(PID_FILE) as f:
+            old_pid = int(f.read().strip())
+        # 旧PID还在运行？退出
+        os.kill(old_pid, 0)
+        return False  # 旧实例还活着
+    except (FileNotFoundError, ValueError, ProcessLookupError, PermissionError):
+        return True  # 没有旧实例，我是新的
+
+# 立即检查并声明
+if not am_i_the_runner():
+    sys.exit(0)
+
+# 写入自己的PID
+with open(PID_FILE, "w") as f:
+    f.write(str(os.getpid()))
+
+# 分钟级防重复：原子性读+写+O_EXCL防止竞态
+this_minute = datetime.now().strftime("%Y%m%d%H%M")
+try:
+    # O_CREAT|O_EXCL = 文件存在则失败，保证原子性
+    fd = os.open(MINUTE_FILE, os.O_WRONLY|os.O_CREAT|os.O_EXCL, 0o644)
+    os.write(fd, this_minute.encode())
+    os.close(fd)
+except FileExistsError:
+    sys.exit(0)  # 文件已存在（上一个进程已创建），退出
+
+# ─── 日志 ───────────────────────────────────────────────────
 def log(msg):
     ts = datetime.now().strftime("%m-%d %H:%M")
-    line = f"[{ts}] {msg}"
-    print(line)
     with open(LOG, "a") as f:
-        f.write(line + "\n")
+        f.write(f"[{ts}] {msg}\n")
 
-def cmd(c, timeout=10):
-    try:
-        r = subprocess.run(c, shell=True, capture_output=True, text=True, timeout=timeout)
-        return r.returncode == 0, r.stdout.strip(), r.stderr.strip()
-    except: return False, "", ""
-
+# ─── 通知 ───────────────────────────────────────────────────
 def feishu(text):
     try:
         subprocess.run(["python3", "/root/.openclaw/workspace/.feishu-notify.py", text],
                       capture_output=True, timeout=10)
     except: pass
 
+# ─── 状态 ───────────────────────────────────────────────────
 def get_state():
     try:
         with open(STATE_FILE) as f:
@@ -41,32 +68,50 @@ def save_state(state):
     with open(STATE_FILE, "w") as f:
         json.dump(state, f, ensure_ascii=False, indent=2)
 
+# ─── Gateway检测 ─────────────────────────────────────────────
 def check_gateway():
-    """检测Gateway是否卡死/崩溃"""
-    # 1. 检查进程是否存在
-    ok, out, _ = cmd("pgrep -f 'openclaw-gateway' 2>/dev/null")
-    if not ok or not out:
+    # 进程
+    try:
+        r = subprocess.run("pgrep -f 'openclaw-gateway'", shell=True, capture_output=True, text=True, timeout=5)
+        pids = [p for p in r.stdout.strip().split("\n") if p]
+    except:
+        pids = []
+    if not pids:
         return "crashed", "Gateway进程不存在"
+    pid = pids[0]
 
-    pid = out.strip().split()[0]
+    # 内存
+    mem_mb = 0
+    try:
+        r = subprocess.run(f"ps -o rss= -p {pid}", shell=True, capture_output=True, text=True, timeout=5)
+        if r.returncode == 0 and r.stdout.strip():
+            mem_mb = int(r.stdout.strip()) / 1024
+    except: pass
 
-    # 2. 检查内存（检测内存泄漏）
-    ok2, mem_out, _ = cmd(f"ps -o rss= -p {pid} 2>/dev/null")
-    if ok2 and mem_out.strip():
-        mem_mb = int(mem_out.strip()) / 1024
-        state = get_state()
-        prev_mem = state.get("prev_gateway_mem_mb", 0)
-        if prev_mem > 0 and mem_mb > MAX_MEM_MB and mem_mb > prev_mem * 1.2:
-            log(f"Gateway内存持续增长: {prev_mem:.0f}MB → {mem_mb:.0f}MB，疑似泄漏，重启")
-            return "memory_leak", f"{prev_mem:.0f}MB→{mem_mb:.0f}MB"
-        state["prev_gateway_mem_mb"] = mem_mb
-        save_state(state)
+    state = get_state()
+    prev_mem = state.get("prev_gateway_mem_mb", 0)
+    if prev_mem > 0 and mem_mb > MAX_MEM_MB and mem_mb > prev_mem * 1.2:
+        log(f"Gateway内存增长: {prev_mem:.0f}MB → {mem_mb:.0f}MB，重启")
+        save_state({**state, "prev_gateway_mem_mb": mem_mb})
+        return "memory_leak", f"{prev_mem:.0f}MB→{mem_mb:.0f}MB"
+    state["prev_gateway_mem_mb"] = mem_mb
 
-    # 3. 检查HTTP响应
-    ok3, code, _ = cmd("curl -s -o /dev/null -w '%{http_code}' --connect-timeout 5 http://127.0.0.1:18789/ 2>/dev/null")
-    if not ok3 or code != "200":
+    # HTTP检测
+    code = "000"
+    start = time.time()
+    try:
+        urllib.request.urlopen("http://127.0.0.1:18789/", timeout=5)
+        code = "200"
+    except urllib.error.HTTPError as e:
+        code = str(e.code)
+    except:
+        code = "000"
+    elapsed_ms = int((time.time() - start) * 1000)
+    log(f"Gateway: PID={pid} mem={mem_mb:.0f}MB HTTP={code} time={elapsed_ms}ms")
+
+    save_state(state)
+    if code != "200":
         return "hung", f"HTTP {code}"
-
     return "ok", ""
 
 def restart_gateway(reason):
@@ -74,49 +119,38 @@ def restart_gateway(reason):
     try:
         subprocess.run(["openclaw", "gateway", "restart"], capture_output=True, timeout=30)
         time.sleep(5)
-        ok, code, _ = cmd("curl -s -o /dev/null -w '%{http_code}' --connect-timeout 5 http://127.0.0.1:18789/ 2>/dev/null")
-        if ok and code == "200":
-            feishu(f"🛡️ Gateway重启成功\n原因: {reason}\n状态: ✅ 恢复正常")
+        try:
+            urllib.request.urlopen("http://127.0.0.1:18789/", timeout=5)
+            code = "200"
+        except:
+            code = "000"
+        if code == "200":
+            feishu(f"🛡️ Gateway重启成功\n原因: {reason}\n状态: ✅")
             log("Gateway重启成功")
         else:
-            feishu(f"🛡️ Gateway重启失败\n原因: {reason}\n状态: ❌ 请检查")
+            feishu(f"🛡️ Gateway重启失败\n原因: {reason}")
             log(f"Gateway重启失败: {code}")
     except Exception as e:
         feishu(f"🛡️ Gateway重启异常\n{e}")
         log(f"Gateway重启异常: {e}")
 
+# ─── 主流程 ─────────────────────────────────────────────────
 def main():
-    # flock确保单实例（即使cron重复触发也不会并发）
-    lock_fd = open(LOCK_FILE, "w")
-    try:
-        fcntl.flock(lock_fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
-    except BlockingIOError:
-        # 已有实例在跑，退出
-        sys.exit(0)
-
     os.chdir("/root/.openclaw/workspace")
-    with open(PID_FILE, "w") as f:
-        f.write(str(os.getpid()))
-
-    log("看门狗检查")
     state = get_state()
     state["last_check"] = datetime.now().isoformat()
     save_state(state)
 
     status, detail = check_gateway()
-
     if status == "ok":
         state["last_ok"] = datetime.now().isoformat()
         save_state(state)
         return
 
     log(f"异常: {status} - {detail}")
-
-    # 防止频繁重启（上次重启在5分钟内则跳过）
     last_restart = state.get("last_restart", "")
     if last_restart:
         try:
-            from datetime import timedelta
             last_dt = datetime.fromisoformat(last_restart)
             if (datetime.now() - last_dt).seconds < 300:
                 log("距上次重启<5分钟，跳过")
