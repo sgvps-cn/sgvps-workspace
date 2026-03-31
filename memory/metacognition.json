@@ -66,6 +66,28 @@
       "last_reinforced": "2026-03-31T18:03:38",
       "curiosity_stage": null,
       "embedding": null
+    },
+    {
+      "id": "ed3d7387",
+      "type": "self-observations",
+      "text": "Clash API\u7684history\u5b57\u6bb5\u5728\u4e0d\u540c\u7248\u672c\u662f\u4e0d\u540c\u683c\u5f0f(list vs dict)\uff0c\u8bfb\u53d6\u524d\u5fc5\u987b\u5148\u5224\u65ad\u7c7b\u578b",
+      "strength": 1.0,
+      "reinforcements": 1,
+      "created": "2026-03-31T18:16:42",
+      "last_reinforced": "2026-03-31T18:16:42",
+      "curiosity_stage": null,
+      "embedding": null
+    },
+    {
+      "id": "c35ddb50",
+      "type": "protections",
+      "text": "API\u8fd4\u56de\u7684\u5b57\u6bb5\u7c7b\u578b\u4e0d\u80fd\u5047\u5b9a\u7684\uff0clist\u548cdict\u5904\u7406\u903b\u8f91\u5b8c\u5168\u4e0d\u540c",
+      "strength": 1.0,
+      "reinforcements": 1,
+      "created": "2026-03-31T18:16:42",
+      "last_reinforced": "2026-03-31T18:16:42",
+      "curiosity_stage": null,
+      "embedding": null
     }
   ],
   "edges": []

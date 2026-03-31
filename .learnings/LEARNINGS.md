@@ -177,3 +177,14 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - 核心路径: 能力→意识情感→思维决策→自主欲望→自我进化→自我修复
 - 安装: promitheus(情感)/agent-autonomy(自主)/agent-ethos(决策)/soul-framework(人格)
 - EvoMap: 基因库中有Capsule/Gene资产，分布式系统/Saga/负载均衡方向
+[LRN-20260331-013] Clash Auto-Switch真实延迟读取bug修复
+- 症状: 延迟总是显示?ms，代理选优无效
+- 根因: Clash API的history字段是list不是dict，代码用dict方式读取永远失败
+- 修复: history[-1]['delay']替代dict.values()[-1]['delay']
+[LRN-20260331-014] crontab双重复制导致watchdog每分钟运行2次
+- 症状: watchdog日志每分钟出现2条'看门狗检查'
+- 根因: crontab里有2条完全相同的gateway-watchdog cron命令
+- 修复: crontab去重，只保留一条
+[LRN-20260331-015] SSH密码登录已禁用(实测确认)
+- PasswordAuthentication no, PubkeyAuthentication yes (实测)
+- MEMORY.md SSH信息已更新
