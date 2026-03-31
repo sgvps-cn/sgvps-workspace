@@ -1,9 +1,11 @@
 {
-  "last_repair": "2026-03-31T14:32:00.656225",
+  "last_repair": "2026-03-31T15:45:10.375687",
   "last_fixed": [
     "rebase_aborted",
     "merge_aborted",
-    "git_fetch",
-    "clash_restart"
-  ]
+    "clash_wrapper_alive_wait",
+    "clash_api_ok",
+    "network_fail(000)"
+  ],
+  "repair_count": 2
 }

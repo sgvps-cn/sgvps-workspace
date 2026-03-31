@@ -142,3 +142,11 @@ Clash深度学习：版本n2023-09-05，Control API可用，59个代理节点
 - 主机监控表: tbl8M9XPQDYQO9cq
 - 同步脚本: .feishu-bitable-sync.py
 
+[LRN-20260331] Clash误检修复：pgrep+cmd()包装导致ok判断失效，改为检查out内容而非ok标志；同时加killall避免进程堆积
+
+[LRN-20260331-007] Self-Repair增强 v2
+- 新增：Gateway健康检查/重复进程检测/内存保护/网络连通性/Self-Cron自检/日志轮转/Feishu通知
+- 教训：killall clash 会杀nohup wrapper，导致循环重启新进程
+- 改进：只杀clash子进程，保留wrapper让其自动恢复
+- dedup阈值：>1个clash进程即清理（wrapper+clash=2正常）
+- 外网连通性检查在沙箱环境无意义，跳过api.openclaw.ai
